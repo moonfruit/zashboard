@@ -292,6 +292,24 @@ const ru: LANG_MESSAGE = {
   clearConnectionHistorySuccess: 'История соединений успешно очищена',
   remainingTraffic: 'Осталось',
   usedTraffic: 'Использовано',
+  // Local
+  local: 'Локально',
+  // Config Update
+  configUpdate: 'Обновление конфигурации',
+  configUrl: 'URL конфигурации',
+  configUrlPlaceholder: 'Введите URL файла конфигурации',
+  configPath: 'Путь к файлу',
+  configPathPlaceholder: 'Введите путь к файлу конфигурации',
+  configFileStatus: 'Статус файла',
+  fileSize: 'Размер',
+  lastModified: 'Изменён',
+  configFileNotFound: 'Файл конфигурации не найден',
+  configPathEmpty: 'Сначала укажите путь к файлу конфигурации',
+  updateConfig: 'Обновить',
+  previewConfig: 'Просмотр',
+  configUpdateSuccess: 'Конфигурация успешно обновлена',
+  configUpdateFailed: 'Ошибка обновления конфигурации',
+  configReadFailed: 'Ошибка чтения файла конфигурации',
 }
 
 export default ru

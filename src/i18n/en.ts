@@ -289,6 +289,24 @@ const en = {
   clearConnectionHistorySuccess: 'Connection history data cleared successfully',
   remainingTraffic: 'Remaining',
   usedTraffic: 'Used',
+  // Local
+  local: 'Local',
+  // Config Update
+  configUpdate: 'Config Update',
+  configUrl: 'Config URL',
+  configUrlPlaceholder: 'Enter config file URL',
+  configPath: 'Config path',
+  configPathPlaceholder: 'Enter config file path',
+  configFileStatus: 'File status',
+  fileSize: 'Size',
+  lastModified: 'Last modified',
+  configFileNotFound: 'Config file not found',
+  configPathEmpty: 'Please set config path first',
+  updateConfig: 'Update Config',
+  previewConfig: 'Preview',
+  configUpdateSuccess: 'Config updated successfully',
+  configUpdateFailed: 'Config update failed',
+  configReadFailed: 'Failed to read config file',
 }
 
 export type LANG_MESSAGE = typeof en

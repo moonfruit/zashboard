@@ -214,6 +214,10 @@ export const displayLatencyInRule = useStorage('config/display-latency-in-rule',
 export const logRetentionLimit = useStorage<number>('config/log-retention-limit', 1000)
 export const logSearchHistory = useStorage<string[]>('config/log-search-history', [])
 
+// config update
+export const configUrl = useStorage<string>('config/config-url', '')
+export const configPath = useStorage<string>('config/config-path', '')
+
 // settings visibility
 // 使用扁平结构，key 格式为 "大设置项.小设置项" 或 "大设置项"（仅大设置项）
 // 默认所有项都可见，只有隐藏的项才会记录在此对象中

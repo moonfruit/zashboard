@@ -287,6 +287,24 @@ const zhTW: LANG_MESSAGE = {
   clearConnectionHistorySuccess: '連接歷史資料清空成功',
   remainingTraffic: '剩餘流量',
   usedTraffic: '已使用',
+  // Local
+  local: '本地',
+  // Config Update
+  configUpdate: '配置更新',
+  configUrl: '配置檔案 URL',
+  configUrlPlaceholder: '輸入配置檔案下載地址',
+  configPath: '配置檔案路徑',
+  configPathPlaceholder: '輸入配置檔案路徑',
+  configFileStatus: '檔案狀態',
+  fileSize: '檔案大小',
+  lastModified: '最後修改',
+  configFileNotFound: '配置檔案不存在',
+  configPathEmpty: '請先設定配置檔案路徑',
+  updateConfig: '更新配置',
+  previewConfig: '預覽配置',
+  configUpdateSuccess: '配置更新成功',
+  configUpdateFailed: '配置更新失敗',
+  configReadFailed: '讀取配置檔案失敗',
 }
 
 export default zhTW

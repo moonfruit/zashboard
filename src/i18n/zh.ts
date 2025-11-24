@@ -287,6 +287,24 @@ const zh: LANG_MESSAGE = {
   clearConnectionHistorySuccess: '连接历史数据清空成功',
   remainingTraffic: '剩余流量',
   usedTraffic: '已使用',
+  // Local
+  local: '本地',
+  // Config Update
+  configUpdate: '配置更新',
+  configUrl: '配置文件 URL',
+  configUrlPlaceholder: '输入配置文件下载地址',
+  configPath: '配置文件路径',
+  configPathPlaceholder: '输入配置文件路径',
+  configFileStatus: '文件状态',
+  fileSize: '文件大小',
+  lastModified: '最后修改',
+  configFileNotFound: '配置文件不存在',
+  configPathEmpty: '请先设置配置文件路径',
+  updateConfig: '更新配置',
+  previewConfig: '预览配置',
+  configUpdateSuccess: '配置更新成功',
+  configUpdateFailed: '配置更新失败',
+  configReadFailed: '读取配置文件失败',
 }
 
 export default zh

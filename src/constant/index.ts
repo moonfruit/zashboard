@@ -1,6 +1,7 @@
 import {
   ArrowsRightLeftIcon,
   Cog6ToothIcon,
+  ComputerDesktopIcon,
   CubeTransparentIcon,
   DocumentTextIcon,
   GlobeAltIcon,
@@ -125,6 +126,7 @@ export enum ROUTE_NAME {
   connections = 'connections',
   logs = 'logs',
   rules = 'rules',
+  local = 'local',
   settings = 'settings',
   setup = 'setup',
 }
@@ -135,6 +137,7 @@ export const ROUTE_ICON_MAP = {
   [ROUTE_NAME.connections]: ArrowsRightLeftIcon,
   [ROUTE_NAME.rules]: SwatchIcon,
   [ROUTE_NAME.logs]: DocumentTextIcon,
+  [ROUTE_NAME.local]: ComputerDesktopIcon,
   [ROUTE_NAME.settings]: Cog6ToothIcon,
   [ROUTE_NAME.setup]: CubeTransparentIcon,
 }
@@ -294,4 +297,8 @@ export enum OVERVIEW_CARD {
   ProviderTrafficOverview = 'ProviderTrafficOverview',
   TopologyCharts = 'TopologyCharts',
   ConnectionHistory = 'ConnectionHistory',
+}
+
+export enum LOCAL_MENU_KEY {
+  configUpdate = 'configUpdate',
 }

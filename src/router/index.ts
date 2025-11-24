@@ -5,6 +5,7 @@ import { language } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import ConnectionsPage from '@/views/ConnectionsPage.vue'
 import HomePage from '@/views/HomePage.vue'
+import LocalPage from '@/views/LocalPage.vue'
 import LogsPage from '@/views/LogsPage.vue'
 import OverviewPage from '@/views/OverviewPage.vue'
 import ProxiesPage from '@/views/ProxiesPage.vue'
@@ -40,6 +41,11 @@ const childrenRouter = [
     path: 'rules',
     name: ROUTE_NAME.rules,
     component: RulesPage,
+  },
+  {
+    path: 'local',
+    name: ROUTE_NAME.local,
+    component: LocalPage,
   },
   {
     path: 'settings',
