@@ -6,7 +6,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+package.json.md5
 node_modules
+wailsjs
 .DS_Store
 dist
 dist-ssr
