@@ -30,3 +30,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Install fork tests
+        run: pnpm -C fork-test i
+
+      - name: Fork tests
+        run: pnpm -C fork-test test

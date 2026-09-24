@@ -43,12 +43,27 @@ external-ui-url: https://github.com/moonfruit/zashboard/releases/latest/download
 
 | 工作流              | 触发                      | 作用                                                                    |
 | ------------------- | ------------------------- | ----------------------------------------------------------------------- |
-| `fork-ci.yml`       | 推送 / PR 到 `moonfruit`  | type-check、lint、build                                                 |
+| `fork-ci.yml`       | 推送 / PR 到 `moonfruit`  | type-check、lint、build、fork 测试                                      |
 | `sync-upstream.yml` | 每 6 小时、手动           | 快进 `main` 和 `upstream`，上游发版后开 PR 合入 `moonfruit`，冲突则失败 |
 | `fork-release.yml`  | 在 `moonfruit` 上手动运行 | 自动编号，发布 Release（`dist.zip`、`dist-no-fonts.zip`）并部署 Pages   |
 | `deploy.yml`        | 上游的发布流程            | 在 fork 中已禁用                                                        |
 
 `sync-upstream.yml` 需要 `SYNC_TOKEN` secret：仅授权本仓库的 fine-grained PAT，权限为 Contents、Pull requests、Workflows 读写。
+
+## 测试
+
+fork 自有的测试放在 `fork-test/`，它是一个独立的 pnpm 项目（有自己的 `package.json`、`pnpm-workspace.yaml`、`pnpm-lock.yaml`），不改动上游的依赖和 lockfile：
+
+```bash
+pnpm i                    # 根项目依赖（被测源码里的 vue 等从这里解析）
+pnpm -C fork-test i       # vitest、happy-dom
+pnpm -C fork-test test
+```
+
+- `vitest.config.ts` 把 `@` 指向 `../src`，与应用使用同一套别名，测试文件直接 `import '@/...'`。
+- 被测源码依赖的包按 Node 规则向上解析到根目录的 `node_modules`，与应用版本一致。
+- 包管理器与根项目一致：`packageManager` 相同，`minimumReleaseAge` 同样是 `10080`。
+- 按特性分子目录，例如 `fork-test/singbox/`。
 
 ## 手动同步
 
