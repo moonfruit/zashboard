@@ -1,6 +1,5 @@
 import { can } from '@/assembly/backend'
-import { configs, updateConfigs } from '@/assembly/config'
-import { activeConnections, connectionAccessor, disconnectById } from '@/assembly/connections'
+import { configs } from '@/assembly/config'
 import {
   allProxiesLatencyTest,
   fetchProxies,
@@ -9,6 +8,7 @@ import {
   proxyProviederList,
   updateProxyProvider,
 } from '@/assembly/proxies'
+import { changeMode } from '@/assembly/singbox/mode'
 import { useCtrlsBar } from '@/composables/use-ctrls-bar'
 import { PROXY_SORT_TYPE, PROXY_TAB_TYPE, ROUTE_NAME, SETTINGS_MENU_KEY } from '@/constant'
 import { renderProxiesPageItems } from '@/helper/proxies'
@@ -93,16 +93,7 @@ export default defineComponent({
     })
 
     const handlerModeChange = (mode: string) => {
-      updateConfigs({ mode })
-      if (can('disconnectOnModeChange') && automaticDisconnection.value) {
-        const accessor = connectionAccessor()
-
-        activeConnections.value.forEach((connection) => {
-          if (accessor.rule(connection).includes('clash_mode')) {
-            disconnectById(connection.id).catch(() => {})
-          }
-        })
-      }
+      changeMode(mode)
     }
 
     const handlerClickLatencyTestAll = async () => {
