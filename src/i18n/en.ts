@@ -325,7 +325,7 @@ const en = {
   pressAnyKey: 'Press a key',
   displayAllFeatures: 'Show all features',
   displayAllFeaturesTip:
-    "Show all features, including those not supported by the official build of the current core (honk). If you're using a fork that supports some of these features, you can try enabling them.",
+    "Show all features, including those not supported by the official build of the current core (honk / sing-box). If you're using a fork that supports some of these features, you can try enabling them.",
   blurIntensity: 'Blur intensity',
   scrollAnimationEffect: 'Scroll animation effect',
 

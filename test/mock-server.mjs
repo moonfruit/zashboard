@@ -127,6 +127,7 @@ export const createMockServer = async ({
   nodes = 60,
   connections = 300,
   providers: providerCount = 4,
+  version = 'v1.19.0',
 } = {}) => {
   const fixture = buildFixture({ groups, nodes, connections, providers: providerCount })
   const { proxies, providers, nodeNames, activeConnections } = fixture
@@ -196,7 +197,7 @@ export const createMockServer = async ({
       return json(res, control)
     }
 
-    if (pathname === '/version') return json(res, { version: 'v1.19.0', meta: true })
+    if (pathname === '/version') return json(res, { version, meta: true })
     if (pathname === '/configs') {
       // 跟 mihomo 的 PATCH 一样:没送到的字段保持原样,tun 里的子字段也是
       if (req.method === 'PATCH') {
@@ -323,6 +324,7 @@ if (isDirectRun) {
   const { values } = parseArgs({
     options: {
       port: { type: 'string', default: '9999' },
+      version: { type: 'string', default: 'v1.19.0' },
       groups: { type: 'string', default: '150' },
       nodes: { type: 'string', default: '60' },
       conns: { type: 'string', default: '300' },
@@ -333,9 +335,10 @@ if (isDirectRun) {
     groups: Number(values.groups),
     nodes: Number(values.nodes),
     connections: Number(values.conns),
+    version: values.version,
   })
 
   console.log(
-    `mock clash api → ${mock.url}  (groups=${values.groups} nodes=${values.nodes} conns=${values.conns})`,
+    `mock clash api → ${mock.url}  (version=${values.version} groups=${values.groups} nodes=${values.nodes} conns=${values.conns})`,
   )
 }
