@@ -34,7 +34,6 @@ describe('singboxCaps', () => {
     'dashboardUpgrade',
     'independentLatency',
     'traceLogLevel',
-    'silentLogLevel',
     'extraLogLevels',
     'customGlobalNode',
     'logTypeFilter',
@@ -48,7 +47,7 @@ describe('singboxCaps', () => {
     'flushFakeIP',
     'connectionsClose',
   ]
-  const NEVER = ['coreUpdateCheck', 'configPatch', 'runtimeStats']
+  const NEVER = ['coreUpdateCheck', 'configPatch', 'runtimeStats', 'silentLogLevel']
   const OVERRIDE_ONLY = ['coreUpgrade', 'updateConfigs', 'updateGeoDatabase', 'syncSettings']
 
   for (const variant of ['official', 'refind', 'moonfruit']) {

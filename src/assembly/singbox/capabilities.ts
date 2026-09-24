@@ -18,7 +18,6 @@ export const singboxCaps = (
     independentLatency: true,
 
     traceLogLevel: true,
-    silentLogLevel: true,
     extraLogLevels: true,
 
     customGlobalNode: true,

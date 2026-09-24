@@ -58,7 +58,7 @@
 | `ruleProviders` | ✗ | ✓ | ✓ | 同上 |
 | `independentLatency` | ✓ | ✓ | ✓ | `/proxies/{name}/delay` |
 | `traceLogLevel` | ✓ | ✓ | ✓ | sing-box 日志级别 |
-| `silentLogLevel` | ✓ | ✓ | ✓ | 同上 |
+| `silentLogLevel` | ✗ | ✗ | ✗ | `log.ParseLevel` 不认 `silent`，`/logs?level=silent` 返回 400 导致 WS 无限重连（最终审查发现，已对照三种源码与实机确认） |
 | `extraLogLevels`（新增，fatal / panic） | ✓ | ✓ | ✓ | 同上 |
 | `customGlobalNode`（新增） | ✓ | ✓ | ✓ | 恢复 |
 | `logTypeFilter`（新增） | ✓ | ✓ | ✓ | 日志 payload 带 `type:` 前缀 |
