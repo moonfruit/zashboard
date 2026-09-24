@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.node.json",
+  "include": ["vitest.config.*"],
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
+  }
+}

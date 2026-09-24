@@ -57,12 +57,14 @@ fork 自有的测试放在 `fork-test/`，它是一个独立的 pnpm 项目（�
 ```bash
 pnpm i                    # 根项目依赖（被测源码里的 vue 等从这里解析）
 pnpm -C fork-test i       # vitest、happy-dom
+pnpm -C fork-test type-check
 pnpm -C fork-test test
 ```
 
 - `vitest.config.ts` 把 `@` 指向 `../src`，与应用使用同一套别名，测试文件直接 `import '@/...'`。
 - 被测源码依赖的包按 Node 规则向上解析到根目录的 `node_modules`，与应用版本一致。
 - 包管理器与根项目一致：`packageManager` 相同，`minimumReleaseAge` 同样是 `10080`。
+- `type-check` 使用根目录的 `vue-tsc`，`tsconfig.app.json` 继承根项目配置，一并检查 `src` 与测试文件；`tsconfig.node.json` 只检查 `vitest.config.ts`。vitest 本身不做类型检查。
 - 按特性分子目录，例如 `fork-test/singbox/`。
 
 ## 手动同步
