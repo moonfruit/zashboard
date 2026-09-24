@@ -1,0 +1,14 @@
+{
+  "name": "zashboard-fork-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "type-check": "../node_modules/.bin/vue-tsc --build --force"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.14.5",
+    "vitest": "^5.0.1"
+  },
+  "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
+}
