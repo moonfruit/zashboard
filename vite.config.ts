@@ -29,7 +29,7 @@ const font = process.env.FONT || 'all'
 // Builds from a fork can publish under their own version and GitHub repo, so the
 // UI update check follows that fork's releases. Both default to upstream values.
 const appVersion = process.env.APP_VERSION || version
-const appRepo = process.env.APP_REPO || 'Zephyruso/zashboard'
+const appRepo = process.env.APP_REPO || 'moonfruit/zashboard'
 
 // https://vite.dev/config/
 export default defineConfig({

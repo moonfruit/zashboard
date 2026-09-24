@@ -27,7 +27,17 @@
 版本号为 `<上游版本>-moonfruit.<N>`，tag 如 `v3.29.1-moonfruit.1`。`package.json` 保持上游版本，构建时通过环境变量注入：
 
 - `APP_VERSION`：覆盖显示的版本号，同时隐藏 commit id
-- `APP_REPO`：UI 更新检查和设置页链接使用的 GitHub 仓库，默认 `Zephyruso/zashboard`
+- `APP_REPO`：UI 更新检查和设置页链接使用的 GitHub 仓库，本分支默认 `moonfruit/zashboard`（上游默认 `Zephyruso/zashboard`）
+
+## 面板升级
+
+面板只负责检查：比较 `https://api.github.com/repos/<APP_REPO>/releases/latest` 的 `tag_name` 与当前版本，不同即提示更新。真正的下载由 mihomo 按自身的 `external-ui-url` 完成，所以要让“升级面板”装上本 fork，mihomo 配置需指向本仓库：
+
+```yaml
+external-ui: ui
+external-ui-url: https://github.com/moonfruit/zashboard/releases/latest/download/dist.zip
+# 或无字体版：.../releases/latest/download/dist-no-fonts.zip
+```
 
 ## 工作流
 
