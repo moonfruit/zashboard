@@ -51,5 +51,7 @@ describe('backend switch reset', () => {
     expect(singboxVariant.value).toBeUndefined()
     expect(can('customGlobalNode')).toBe(false)
     expect(can('coreUpgrade')).toBe(true)
+    expect(can('configPatch')).toBe(true)
+    expect(can('modeSwitch')).toBe(false)
   })
 })

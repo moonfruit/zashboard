@@ -64,6 +64,7 @@
 | `logTypeFilter`（新增） | ✓ | ✓ | ✓ | 日志 payload 带 `type:` 前缀 |
 | `logConnectionDetail`（新增） | ✓ | ✓ | ✓ | 日志以 `[id 耗时] tag: ` 开头；id 为日志上下文 id（非 `/connections` 的 UUID），用于筛出「同连接日志」 |
 | `disconnectOnModeChange`（新增） | ✓ | ✓ | ✓ | 切模式后需断开命中 `clash_mode` 的连接 |
+| `modeSwitch`（新增） | ✓ | ✓ | ✓ | `PATCH /configs` 支持 `mode`；上游模式下拉框以 `configPatch` 门控，sing-box 需单独放开（实测发现） |
 | `latencyTest` `nodeLatencyTest` `customTestUrl` `dnsQuery` `flushDNSCache` `flushFakeIP` `connectionsClose` | ✓ | ✓ | ✓ | 三者均有 |
 | `coreUpgrade` `coreUpdateCheck` `updateConfigs` `updateGeoDatabase` `syncSettings` `configPatch` `runtimeStats` | ✗ | ✗ | ✗ | 无端点，或 PATCH `/configs` 只认 `mode`，或 reload 忽略 path/payload |
 

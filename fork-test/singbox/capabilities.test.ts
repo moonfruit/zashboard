@@ -19,6 +19,7 @@ const ALWAYS: Cap[] = [
   'logTypeFilter',
   'logConnectionDetail',
   'disconnectOnModeChange',
+  'modeSwitch',
   'latencyTest',
   'nodeLatencyTest',
   'customTestUrl',

@@ -73,6 +73,7 @@ export type Cap =
   | 'logTypeFilter'
   | 'logConnectionDetail'
   | 'disconnectOnModeChange'
+  | 'modeSwitch'
 
 type Caps = Partial<Record<Cap, boolean>>
 

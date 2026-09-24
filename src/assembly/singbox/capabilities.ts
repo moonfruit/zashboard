@@ -24,6 +24,7 @@ export const singboxCaps = (
     logTypeFilter: true,
     logConnectionDetail: true,
     disconnectOnModeChange: true,
+    modeSwitch: true,
 
     latencyTest: true,
     proxyProviderUpdate: refind,
