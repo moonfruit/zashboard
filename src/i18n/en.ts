@@ -299,6 +299,7 @@ const en = {
   backgroundToneDarkThemeLabel: 'dark theme',
   minProxyCardWidth: 'Minimum proxy card width',
   displayGlobalByMode: 'Show GLOBAL based on mode',
+  customGlobalNode: 'Custom global node',
   displaySelectedNode: 'Show selected node',
   displayLatencyNumber: 'Show latency numbers',
   disconnectOnRuleDisable: 'Disconnect matching connections when a rule is disabled',

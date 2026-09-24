@@ -293,6 +293,7 @@ const zhTW: LANG_MESSAGE = {
   backgroundToneDarkThemeLabel: '深色主題',
   minProxyCardWidth: '節點卡片最小寬度',
   displayGlobalByMode: '根據模式顯示 GLOBAL',
+  customGlobalNode: '自訂全域節點',
   displaySelectedNode: '顯示選中節點',
   displayLatencyNumber: '顯示延遲數字',
   disconnectOnRuleDisable: '禁用規則時打斷連接',

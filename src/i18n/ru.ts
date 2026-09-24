@@ -302,6 +302,7 @@ const ru: LANG_MESSAGE = {
   backgroundToneDarkThemeLabel: 'темная тема',
   minProxyCardWidth: 'Минимальная ширина карточки прокси',
   displayGlobalByMode: 'Отображать GLOBAL по режиму',
+  customGlobalNode: 'Пользовательский глобальный узел',
   displaySelectedNode: 'Отображать выбранный узел',
   displayLatencyNumber: 'Отображать задержку',
   disconnectOnRuleDisable: 'Разрывать соединения при отключении правила',

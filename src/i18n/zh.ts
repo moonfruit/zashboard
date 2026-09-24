@@ -293,6 +293,7 @@ const zh: LANG_MESSAGE = {
   backgroundToneDarkThemeLabel: '深色主题',
   minProxyCardWidth: '节点卡片最小宽度',
   displayGlobalByMode: '根据模式显示 GLOBAL',
+  customGlobalNode: '自定义全局节点',
   displaySelectedNode: '显示选中节点',
   displayLatencyNumber: '显示延迟数字',
   disconnectOnRuleDisable: '禁用规则时打断连接',

@@ -1,5 +1,6 @@
 import { can } from '@/assembly/backend'
 import { configs, updateConfigs } from '@/assembly/config'
+import { activeConnections, connectionAccessor, disconnectById } from '@/assembly/connections'
 import {
   allProxiesLatencyTest,
   fetchProxies,
@@ -93,6 +94,15 @@ export default defineComponent({
 
     const handlerModeChange = (mode: string) => {
       updateConfigs({ mode })
+      if (can('disconnectOnModeChange') && automaticDisconnection.value) {
+        const accessor = connectionAccessor()
+
+        activeConnections.value.forEach((connection) => {
+          if (accessor.rule(connection).includes('clash_mode')) {
+            disconnectById(connection.id).catch(() => {})
+          }
+        })
+      }
     }
 
     const handlerClickLatencyTestAll = async () => {
