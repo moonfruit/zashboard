@@ -1,4 +1,6 @@
+import { can } from '@/assembly/backend'
 import { initLogs, isPaused, logLevel, logs, supportedLogLevels } from '@/assembly/logs'
+import { getSingboxLogType } from '@/assembly/singbox/logs'
 import { useCtrlsBar } from '@/composables/use-ctrls-bar'
 import { useTooltip } from '@/composables/use-tooltip'
 import { LIST_DISPLAY_STYLE, LOG_LEVEL } from '@/constant'
@@ -55,10 +57,16 @@ export default defineComponent({
       const levels: string[] = []
 
       for (const log of logs.value) {
-        const index = log.payload.indexOf(' ')
-        const type = index === -1 ? log.payload : log.payload.slice(0, index)
+        let type: string
 
-        if (!types.includes(type)) {
+        if (can('logTypeFilter')) {
+          type = getSingboxLogType(log.payload)
+        } else {
+          const index = log.payload.indexOf(' ')
+          type = index === -1 ? log.payload : log.payload.slice(0, index)
+        }
+
+        if (type && !types.includes(type)) {
           types.push(type)
         }
 

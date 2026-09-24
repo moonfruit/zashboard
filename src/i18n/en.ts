@@ -64,6 +64,7 @@ const en = {
   allConnections: 'All',
   logLevel: 'Log level',
   logType: 'Log type',
+  sameConnectionLogs: 'Logs of the same connection',
 
   twoColumnProxyGroup: 'Two-column proxy groups',
   type: 'Type',

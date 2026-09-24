@@ -66,6 +66,7 @@ const zhTW: LANG_MESSAGE = {
   allConnections: '全部',
   logLevel: '日誌等級',
   logType: '日誌類型',
+  sameConnectionLogs: '同連線日誌',
 
   twoColumnProxyGroup: '雙列顯示代理組',
   type: '類型',

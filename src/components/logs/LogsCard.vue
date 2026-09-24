@@ -1,5 +1,9 @@
 <template>
-  <div class="hover:bg-base-200/40 flex flex-col gap-1 px-3 py-2.5 text-sm transition-colors">
+  <div
+    class="hover:bg-base-200/40 flex flex-col gap-1 px-3 py-2.5 text-sm transition-colors"
+    :class="connectionID && 'cursor-pointer'"
+    @click="connectionID && emits('connectionClick', connectionID)"
+  >
     <div class="flex items-center gap-2">
       <span
         class="text-base-content/40 text-xs tabular-nums"
@@ -34,6 +38,8 @@
 </template>
 
 <script setup lang="ts">
+import { can } from '@/assembly/backend'
+import { getLogConnectionID } from '@/assembly/singbox/logs'
 import HighlightText from '@/components/common/HighlightText.vue'
 import { useBounceOnVisible } from '@/composables/use-bounce-on-visible'
 import { LOG_LEVEL } from '@/constant'
@@ -43,7 +49,18 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   log: LogWithSeq
+  connectionDetailDisabled?: boolean
 }>()
+
+const emits = defineEmits<{
+  (e: 'connectionClick', connectionID: string): void
+}>()
+
+const connectionID = computed(() => {
+  if (!can('logConnectionDetail') || props.connectionDetailDisabled) return null
+
+  return getLogConnectionID(props.log.payload)
+})
 
 const seqWithPadding = computed(() => {
   return props.log.seq.toString().padStart(2, '0')

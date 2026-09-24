@@ -66,6 +66,7 @@ const zh: LANG_MESSAGE = {
   allConnections: '全部',
   logLevel: '日志等级',
   logType: '日志类型',
+  sameConnectionLogs: '同连接日志',
 
   twoColumnProxyGroup: '双列显示代理组',
   type: '类型',

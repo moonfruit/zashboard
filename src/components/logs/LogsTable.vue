@@ -5,10 +5,14 @@
     sorting-key="config/logs-table-sorting"
     :estimate-size="36"
     table-class="table-fixed min-w-2xl"
+    :row-class="rowClass"
+    @row-click="handlerRowClick"
   />
 </template>
 
 <script setup lang="ts">
+import { can } from '@/assembly/backend'
+import { getLogConnectionID } from '@/assembly/singbox/logs'
 import HighlightText from '@/components/common/HighlightText.vue'
 import VirtualTable from '@/components/common/VirtualTable.vue'
 import { LOG_LEVEL } from '@/constant'
@@ -21,6 +25,26 @@ import { useI18n } from 'vue-i18n'
 defineProps<{
   logs: LogWithSeq[]
 }>()
+
+const emits = defineEmits<{
+  (e: 'connectionClick', connectionID: string): void
+}>()
+
+const connectionIDOf = (log: LogWithSeq) => {
+  if (!can('logConnectionDetail')) return null
+
+  return getLogConnectionID(log.payload)
+}
+
+const rowClass = (log: LogWithSeq) => (connectionIDOf(log) ? 'cursor-pointer' : undefined)
+
+const handlerRowClick = (log: LogWithSeq) => {
+  const connectionID = connectionIDOf(log)
+
+  if (connectionID) {
+    emits('connectionClick', connectionID)
+  }
+}
 
 const { t } = useI18n()
 

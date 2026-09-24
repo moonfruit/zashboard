@@ -66,6 +66,7 @@ const ru: LANG_MESSAGE = {
   allConnections: 'Все',
   logLevel: 'Уровень',
   logType: 'Тип журнала',
+  sameConnectionLogs: 'Журналы одного соединения',
 
   twoColumnProxyGroup: 'Группа прокси в два столбца',
   type: 'Тип',

@@ -290,6 +290,16 @@ export const createMockServer = async ({
           socket.write(websocketFrame(JSON.stringify({ up: 1e6, down: 5e6 })))
         } else if (pathname.startsWith('/memory')) {
           socket.write(websocketFrame(JSON.stringify({ inuse: 1e8, oslimit: 0 })))
+        } else if (pathname.startsWith('/logs')) {
+          const id = 1000 + (tick % 3)
+          const payload = version.includes('sing-box')
+            ? [
+                `[${id} ${tick}ms] router: match[0] => direct`,
+                `[${id} ${tick}ms] outbound/direct[direct]: outbound connection to example.com:443`,
+                'sing-box started (0.12s)',
+              ][tick % 3]
+            : `[TCP] 127.0.0.1:${50000 + tick} --> example.com:443 match Match using DIRECT`
+          socket.write(websocketFrame(JSON.stringify({ type: 'info', payload })))
         }
       } catch {
         clearInterval(timer)
