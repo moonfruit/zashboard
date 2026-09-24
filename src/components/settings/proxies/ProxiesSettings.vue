@@ -161,8 +161,8 @@
           </div>
           <SelectInput
             class="select select-sm w-32"
-            v-model="customGlobalNode"
-            :options="Object.keys(proxyMap).map((value) => ({ value, label: value }))"
+            v-model="effectiveGlobalNode"
+            :options="customGlobalNodeOptions.map((value) => ({ value, label: value }))"
           />
         </SettingItem>
         <SettingItem :setting-key="k.proxyPreviewType">
@@ -226,7 +226,7 @@
 
 <script setup lang="ts">
 import { can } from '@/assembly/backend'
-import { proxyMap } from '@/assembly/proxies'
+import { customGlobalNodeOptions, effectiveGlobalNode } from '@/assembly/singbox/global-node'
 import SelectInput from '@/components/common/SelectInput.vue'
 import SettingItem from '@/components/settings/SettingItem.vue'
 import { useIsSettingVisible } from '@/composables/use-setting-visibility'
@@ -235,7 +235,6 @@ import { FOLDER_MODE, PROXY_CARD_SIZE, PROXY_PREVIEW_TYPE, SPEEDTEST_MODE } from
 import { useTooltip } from '@/composables/use-tooltip'
 import { getMinCardWidth } from '@/helper/utils'
 import {
-  customGlobalNode,
   displayGlobalByMode,
   independentLatencyTest,
   IPv6test,
