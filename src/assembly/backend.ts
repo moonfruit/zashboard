@@ -62,6 +62,11 @@ export type Cap =
   | 'entryManage'
   | 'groupConfigPatch'
   | 'lifecycleControl'
+  | 'extraLogLevels'
+  | 'customGlobalNode'
+  | 'logTypeFilter'
+  | 'logConnectionDetail'
+  | 'disconnectOnModeChange'
 
 type Caps = Partial<Record<Cap, boolean>>
 
