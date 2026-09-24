@@ -16,6 +16,7 @@ export const version = ref()
 export const isCoreUpdateAvailable = ref(false)
 export const isUIUpdateAvailable = ref(false)
 export const zashboardVersion = ref(__APP_VERSION__)
+export const zashboardRepo = __APP_REPO__
 
 export type BackendProbe = {
   uuid: string
@@ -147,7 +148,7 @@ const fetchIsCoreUpdateAvailable = async () => {
 
 export const checkUIUpdate = async () => {
   const { tag_name } = await fetchWithLocalCache<{ tag_name: string }>(
-    'https://api.github.com/repos/Zephyruso/zashboard/releases/latest',
+    `https://api.github.com/repos/${zashboardRepo}/releases/latest`,
     zashboardVersion.value,
   )
 

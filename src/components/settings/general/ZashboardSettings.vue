@@ -10,7 +10,7 @@
           <span class="bg-secondary h-2 w-2 rounded-full"></span>
         </span>
         <a
-          href="https://github.com/Zephyruso/zashboard"
+          :href="`https://github.com/${zashboardRepo}`"
           target="_blank"
           class="text-lg font-semibold"
         >
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { isUIUpdateAvailable, zashboardVersion } from '@/assembly/version'
+import { isUIUpdateAvailable, zashboardRepo, zashboardVersion } from '@/assembly/version'
 import GeneralSettings from './GeneralSettings.vue'
 import StyleSettings from './StyleSettings.vue'
 

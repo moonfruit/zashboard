@@ -26,11 +26,18 @@ const getGitCommitId = (): string => {
 // See src/assets/load-fonts.ts for what each value loads.
 const font = process.env.FONT || 'all'
 
+// Builds from a fork can publish under their own version and GitHub repo, so the
+// UI update check follows that fork's releases. Both default to upstream values.
+const appVersion = process.env.APP_VERSION || version
+const appRepo = process.env.APP_REPO || 'Zephyruso/zashboard'
+
 // https://vite.dev/config/
 export default defineConfig({
   define: {
-    __APP_VERSION__: JSON.stringify(version),
-    __COMMIT_ID__: JSON.stringify(getGitCommitId()),
+    __APP_VERSION__: JSON.stringify(appVersion),
+    __APP_REPO__: JSON.stringify(appRepo),
+    // An explicit APP_VERSION marks a release build, which shows no commit id.
+    __COMMIT_ID__: JSON.stringify(process.env.APP_VERSION ? '' : getGitCommitId()),
     __FONT__: JSON.stringify(font),
   },
   base: './',
