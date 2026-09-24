@@ -1,0 +1,128 @@
+# Publishes a fork release: <upstream version>-moonfruit.<N>.
+# Run it manually from the Actions page on the moonfruit branch.
+name: Fork Release
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: fork-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/moonfruit'
+    runs-on: ubuntu-latest
+    outputs:
+      base: ${{ steps.version.outputs.base }}
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      prev: ${{ steps.version.outputs.prev }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Compute next version
+        id: version
+        run: |
+          if released=$(git describe --tags --exact-match --match 'v*-moonfruit.*' HEAD 2>/dev/null); then
+            echo "::error::HEAD is already released as ${released}"
+            exit 1
+          fi
+
+          base=$(jq -r .version package.json)
+          last=$(git tag -l "v${base}-moonfruit.*" | sed -E 's/.*\.([0-9]+)$/\1/' | sort -n | tail -1)
+          version="${base}-moonfruit.$(( ${last:-0} + 1 ))"
+          prev=$(git describe --tags --abbrev=0 --match 'v*-moonfruit.*' HEAD 2>/dev/null || true)
+
+          {
+            echo "base=${base}"
+            echo "version=${version}"
+            echo "tag=v${version}"
+            echo "prev=${prev}"
+          } >> "$GITHUB_OUTPUT"
+          echo "Releasing v${version} (previous: ${prev:-none})"
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        font:
+          - { key: all, suffix: '' }
+          - { key: none, suffix: '-no-fonts' }
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+      - uses: pnpm/action-setup@v6
+
+      - name: Build
+        env:
+          FONT: ${{ matrix.font.key }}
+          APP_VERSION: ${{ needs.prepare.outputs.version }}
+          APP_REPO: ${{ github.repository }}
+        run: |
+          pnpm i
+          pnpm run build
+          zip -r dist${{ matrix.font.suffix }}.zip dist
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist${{ matrix.font.suffix }}
+          path: dist${{ matrix.font.suffix }}.zip
+          if-no-files-found: error
+
+  release:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          merge-multiple: true
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+          BASE: ${{ needs.prepare.outputs.base }}
+          PREV: ${{ needs.prepare.outputs.prev }}
+        run: |
+          args=(--repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TAG" --latest --generate-notes)
+          if [ -n "$PREV" ]; then
+            args+=(--notes-start-tag "$PREV")
+          fi
+          notes="Based on upstream [v${BASE}](https://github.com/Zephyruso/zashboard/releases/tag/v${BASE})."
+          gh release create "$TAG" dist.zip dist-no-fonts.zip "${args[@]}" --notes "$notes"
+
+  pages:
+    needs: [prepare, release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        font:
+          - { suffix: '' }
+          - { suffix: '-no-fonts' }
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist${{ matrix.font.suffix }}
+
+      - run: unzip -q dist${{ matrix.font.suffix }}.zip
+
+      - name: Deploy to gh-pages${{ matrix.font.suffix }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ github.token }}
+          publish_dir: ./dist
+          publish_branch: gh-pages${{ matrix.font.suffix }}
+          force_orphan: true

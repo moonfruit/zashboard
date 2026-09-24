@@ -1,0 +1,108 @@
+# Keeps the fork's tracking branches in step with Zephyruso/zashboard:
+#   main      -> upstream main, fast-forward only
+#   upstream  -> latest upstream release tag, fast-forward only
+# and opens a PR merging a new upstream release into moonfruit.
+#
+# Requires the SYNC_TOKEN secret: a fine-grained PAT for this repository with
+# Contents, Pull requests and Workflows read/write. GITHUB_TOKEN cannot push
+# commits that touch .github/workflows, and PRs it opens do not trigger CI.
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+    steps:
+      - name: Check token
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::SYNC_TOKEN secret is not configured"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v6
+        with:
+          ref: moonfruit
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN }}
+
+      - name: Fetch upstream
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git remote add zephyruso https://github.com/Zephyruso/zashboard.git
+          git fetch --tags zephyruso main
+
+      - name: Fast-forward main
+        run: git push origin refs/remotes/zephyruso/main:refs/heads/main
+
+      - name: Fast-forward upstream to latest release
+        id: release
+        run: |
+          tag=$(git tag -l 'v*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+          if ! git merge-base --is-ancestor "$tag" zephyruso/main; then
+            echo "::error::${tag} is not on upstream main"
+            exit 1
+          fi
+
+          if git merge-base --is-ancestor "$tag" origin/upstream; then
+            echo "upstream is already at ${tag}"
+          else
+            git push origin "$(git rev-parse "${tag}^{commit}"):refs/heads/upstream"
+            git fetch origin upstream
+          fi
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR into moonfruit
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          if git merge-base --is-ancestor origin/upstream origin/moonfruit; then
+            echo "moonfruit already contains ${TAG}"
+            exit 0
+          fi
+
+          branch="sync/${TAG}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "${branch} already exists"
+            exit 0
+          fi
+
+          git switch -c "$branch" origin/moonfruit
+          if ! git merge --no-ff origin/upstream -m "Merge upstream ${TAG} into moonfruit"; then
+            {
+              echo "### Merging upstream ${TAG} into moonfruit conflicts"
+              echo
+              git diff --name-only --diff-filter=U | sed 's/^/- /'
+              echo
+              # shellcheck disable=SC2016 # literal backticks for Markdown
+              echo 'Resolve locally: `git switch moonfruit && git merge upstream`'
+            } >> "$GITHUB_STEP_SUMMARY"
+            git merge --abort
+            echo "::error::Merge conflict, see the job summary"
+            exit 1
+          fi
+
+          git push origin "$branch"
+          gh pr create --base moonfruit --head "$branch" \
+            --title "Sync upstream ${TAG}" \
+            --body "Merges upstream [${TAG}](https://github.com/Zephyruso/zashboard/releases/tag/${TAG}) into moonfruit.
+
+          Merge with **Create a merge commit**. Squash or rebase would drop the upstream ancestry and make the next sync conflict."
+
+          gh pr list --base moonfruit --state open --json number,headRefName \
+            -q ".[] | select(.headRefName | startswith(\"sync/\")) | select(.headRefName != \"${branch}\") | .number" |
+            xargs -r -n1 gh pr close --delete-branch --comment "Superseded by ${TAG}."
