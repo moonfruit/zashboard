@@ -2,11 +2,14 @@ import { displayAllFeatures } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import { computed, ref } from 'vue'
 import { daeCapabilities } from './capabilities'
+import { singboxCaps } from './singbox/capabilities'
+import { singboxVariant } from './singbox/variant'
 
 export enum Core {
   Mihomo = 'mihomo',
   Honk = 'honk',
   Dae = 'dae',
+  Singbox = 'singbox',
   Unknown = 'unknown',
 }
 
@@ -14,10 +17,13 @@ export const core = ref<Core>(Core.Unknown)
 
 export const resetCore = () => {
   core.value = Core.Unknown
+  singboxVariant.value = undefined
 }
 
 const isNonMihomoCore = computed(
-  () => core.value === Core.Honk && activeBackend.value?.type !== 'dae',
+  () =>
+    (core.value === Core.Honk || core.value === Core.Singbox) &&
+    activeBackend.value?.type !== 'dae',
 )
 
 const isForkCoreOverride = computed(() => isNonMihomoCore.value && displayAllFeatures.value)
@@ -62,6 +68,12 @@ export type Cap =
   | 'entryManage'
   | 'groupConfigPatch'
   | 'lifecycleControl'
+  | 'extraLogLevels'
+  | 'customGlobalNode'
+  | 'logTypeFilter'
+  | 'logConnectionDetail'
+  | 'disconnectOnModeChange'
+  | 'modeSwitch'
 
 type Caps = Partial<Record<Cap, boolean>>
 
@@ -134,9 +146,13 @@ const daeCaps = computed<Caps>(() => {
   }
 })
 
-const soft = computed<Caps>(() =>
-  activeBackend.value?.type === 'dae' ? daeCaps.value : clashCaps.value,
-)
+const soft = computed<Caps>(() => {
+  if (activeBackend.value?.type === 'dae') return daeCaps.value
+  if (core.value === Core.Singbox) {
+    return singboxCaps(singboxVariant.value ?? 'official', isForkCoreOverride.value)
+  }
+  return clashCaps.value
+})
 
 export const can = (cap: Cap): boolean => {
   if (!activeBackend.value) return false

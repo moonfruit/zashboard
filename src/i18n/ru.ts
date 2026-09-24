@@ -66,6 +66,7 @@ const ru: LANG_MESSAGE = {
   allConnections: 'Все',
   logLevel: 'Уровень',
   logType: 'Тип журнала',
+  sameConnectionLogs: 'Журналы одного соединения',
 
   twoColumnProxyGroup: 'Группа прокси в два столбца',
   type: 'Тип',
@@ -301,6 +302,7 @@ const ru: LANG_MESSAGE = {
   backgroundToneDarkThemeLabel: 'темная тема',
   minProxyCardWidth: 'Минимальная ширина карточки прокси',
   displayGlobalByMode: 'Отображать GLOBAL по режиму',
+  customGlobalNode: 'Пользовательский глобальный узел',
   displaySelectedNode: 'Отображать выбранный узел',
   displayLatencyNumber: 'Отображать задержку',
   disconnectOnRuleDisable: 'Разрывать соединения при отключении правила',
@@ -328,7 +330,7 @@ const ru: LANG_MESSAGE = {
   pressAnyKey: 'Нажмите клавишу',
   displayAllFeatures: 'Показать все функции',
   displayAllFeaturesTip:
-    'Показать все функции, включая те, которые не поддерживаются официальной сборкой текущего ядра (honk). Если вы используете форк, поддерживающий некоторые из этих функций, вы можете попробовать их включить.',
+    'Показать все функции, включая те, которые не поддерживаются официальной сборкой текущего ядра (honk / sing-box). Если вы используете форк, поддерживающий некоторые из этих функций, вы можете попробовать их включить.',
   blurIntensity: 'Интенсивность размытия',
   scrollAnimationEffect: 'Эффект анимации прокрутки',
 

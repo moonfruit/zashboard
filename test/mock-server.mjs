@@ -127,6 +127,7 @@ export const createMockServer = async ({
   nodes = 60,
   connections = 300,
   providers: providerCount = 4,
+  version = 'v1.19.0',
 } = {}) => {
   const fixture = buildFixture({ groups, nodes, connections, providers: providerCount })
   const { proxies, providers, nodeNames, activeConnections } = fixture
@@ -196,7 +197,7 @@ export const createMockServer = async ({
       return json(res, control)
     }
 
-    if (pathname === '/version') return json(res, { version: 'v1.19.0', meta: true })
+    if (pathname === '/version') return json(res, { version, meta: true })
     if (pathname === '/configs') {
       // 跟 mihomo 的 PATCH 一样:没送到的字段保持原样,tun 里的子字段也是
       if (req.method === 'PATCH') {
@@ -289,6 +290,16 @@ export const createMockServer = async ({
           socket.write(websocketFrame(JSON.stringify({ up: 1e6, down: 5e6 })))
         } else if (pathname.startsWith('/memory')) {
           socket.write(websocketFrame(JSON.stringify({ inuse: 1e8, oslimit: 0 })))
+        } else if (pathname.startsWith('/logs')) {
+          const id = 1000 + (tick % 3)
+          const payload = version.includes('sing-box')
+            ? [
+                `[${id} ${tick}ms] router: match[0] => direct`,
+                `[${id} ${tick}ms] outbound/direct[direct]: outbound connection to example.com:443`,
+                'sing-box started (0.12s)',
+              ][tick % 3]
+            : `[TCP] 127.0.0.1:${50000 + tick} --> example.com:443 match Match using DIRECT`
+          socket.write(websocketFrame(JSON.stringify({ type: 'info', payload })))
         }
       } catch {
         clearInterval(timer)
@@ -323,6 +334,7 @@ if (isDirectRun) {
   const { values } = parseArgs({
     options: {
       port: { type: 'string', default: '9999' },
+      version: { type: 'string', default: 'v1.19.0' },
       groups: { type: 'string', default: '150' },
       nodes: { type: 'string', default: '60' },
       conns: { type: 'string', default: '300' },
@@ -333,9 +345,10 @@ if (isDirectRun) {
     groups: Number(values.groups),
     nodes: Number(values.nodes),
     connections: Number(values.conns),
+    version: values.version,
   })
 
   console.log(
-    `mock clash api → ${mock.url}  (groups=${values.groups} nodes=${values.nodes} conns=${values.conns})`,
+    `mock clash api → ${mock.url}  (version=${values.version} groups=${values.groups} nodes=${values.nodes} conns=${values.conns})`,
   )
 }

@@ -5,6 +5,7 @@ import {
   proxyMap,
   proxyProviederList,
 } from '@/assembly/proxies'
+import { effectiveGlobalNode } from '@/assembly/singbox/global-node'
 import { GLOBAL, PROXY_TAB_TYPE } from '@/constant'
 import { isHiddenGroup } from '@/helper'
 import { proxiesTabShow } from '@/store/proxies'
@@ -43,7 +44,7 @@ const getRenderProxyGroups = () => {
 
   if (displayGlobalByMode.value) {
     if (configs.value?.mode.toUpperCase() === GLOBAL) {
-      return filterProxyGroups(getProxyGroupChains(GLOBAL), false)
+      return filterProxyGroups(getProxyGroupChains(effectiveGlobalNode.value), false)
     }
 
     return filterProxyGroups(proxyGroupList.value)

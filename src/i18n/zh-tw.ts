@@ -66,6 +66,7 @@ const zhTW: LANG_MESSAGE = {
   allConnections: '全部',
   logLevel: '日誌等級',
   logType: '日誌類型',
+  sameConnectionLogs: '同連線日誌',
 
   twoColumnProxyGroup: '雙列顯示代理組',
   type: '類型',
@@ -292,6 +293,7 @@ const zhTW: LANG_MESSAGE = {
   backgroundToneDarkThemeLabel: '深色主題',
   minProxyCardWidth: '節點卡片最小寬度',
   displayGlobalByMode: '根據模式顯示 GLOBAL',
+  customGlobalNode: '自訂全域節點',
   displaySelectedNode: '顯示選中節點',
   displayLatencyNumber: '顯示延遲數字',
   disconnectOnRuleDisable: '禁用規則時打斷連接',
@@ -317,7 +319,7 @@ const zhTW: LANG_MESSAGE = {
   pressAnyKey: '按下任意鍵',
   displayAllFeatures: '顯示所有功能',
   displayAllFeaturesTip:
-    '顯示所有功能，包括目前核心（honk）官方版本不支援的功能，如果您使用的 fork 版本支援其中的某些功能，可以嘗試啟用',
+    '顯示所有功能，包括目前核心（honk / sing-box）官方版本不支援的功能，如果您使用的 fork 版本支援其中的某些功能，可以嘗試啟用',
   blurIntensity: '毛玻璃強度',
   scrollAnimationEffect: '滾動動畫效果',
 

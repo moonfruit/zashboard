@@ -64,6 +64,7 @@ const en = {
   allConnections: 'All',
   logLevel: 'Log level',
   logType: 'Log type',
+  sameConnectionLogs: 'Logs of the same connection',
 
   twoColumnProxyGroup: 'Two-column proxy groups',
   type: 'Type',
@@ -298,6 +299,7 @@ const en = {
   backgroundToneDarkThemeLabel: 'dark theme',
   minProxyCardWidth: 'Minimum proxy card width',
   displayGlobalByMode: 'Show GLOBAL based on mode',
+  customGlobalNode: 'Custom global node',
   displaySelectedNode: 'Show selected node',
   displayLatencyNumber: 'Show latency numbers',
   disconnectOnRuleDisable: 'Disconnect matching connections when a rule is disabled',
@@ -325,7 +327,7 @@ const en = {
   pressAnyKey: 'Press a key',
   displayAllFeatures: 'Show all features',
   displayAllFeaturesTip:
-    "Show all features, including those not supported by the official build of the current core (honk). If you're using a fork that supports some of these features, you can try enabling them.",
+    "Show all features, including those not supported by the official build of the current core (honk / sing-box). If you're using a fork that supports some of these features, you can try enabling them.",
   blurIntensity: 'Blur intensity',
   scrollAnimationEffect: 'Scroll animation effect',
 

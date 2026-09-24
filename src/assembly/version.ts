@@ -1,6 +1,7 @@
 import DaeLogo from '@/assets/images/dae.jpg'
 import HonkLogo from '@/assets/images/honk.svg'
 import MetacubexLogo from '@/assets/images/metacubex.jpg'
+import SingBoxLogo from '@/assets/images/sing-box.svg'
 import { MIHOMO, MIHOMO_CHANNEL } from '@/constant'
 import { fetchWithLocalCache } from '@/helper/cache'
 import { getRequestErrorMessage } from '@/helper/request-error'
@@ -11,6 +12,7 @@ import { computed, nextTick, ref } from 'vue'
 import { can, core, Core, resetCore } from './backend'
 import { fetchCapabilities, resetCapabilities } from './capabilities'
 import { driver } from './driver'
+import { detectSingboxVariant, singboxVariant } from './singbox/variant'
 
 export const version = ref()
 export const isCoreUpdateAvailable = ref(false)
@@ -29,6 +31,7 @@ export const backendProbe = ref<BackendProbe | undefined>()
 
 const detectCore = (versionString: string): Core => {
   if (/\bhonk\b/i.test(versionString)) return Core.Honk
+  if (versionString.includes('sing-box')) return Core.Singbox
   if (activeBackend.value?.type === 'dae') return Core.Dae
   if (!versionString) return Core.Unknown
   return Core.Mihomo
@@ -40,6 +43,8 @@ export const coreBrand = computed(() => {
       return { logo: HonkLogo, url: 'https://github.com/Glassyiris/honk' }
     case Core.Dae:
       return { logo: DaeLogo, url: 'https://github.com/daeuniverse/dae' }
+    case Core.Singbox:
+      return { logo: SingBoxLogo, url: 'https://github.com/SagerNet/sing-box' }
     default:
       return {
         logo: MetacubexLogo,
@@ -93,6 +98,8 @@ const probeBackendVersion = async (backend: Backend) => {
 
   version.value = versionString
   core.value = detectCore(version.value)
+  singboxVariant.value =
+    core.value === Core.Singbox ? detectSingboxVariant(version.value) : undefined
 
   if (backend.type === 'dae') {
     await fetchCapabilities()

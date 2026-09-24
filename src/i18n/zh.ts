@@ -66,6 +66,7 @@ const zh: LANG_MESSAGE = {
   allConnections: '全部',
   logLevel: '日志等级',
   logType: '日志类型',
+  sameConnectionLogs: '同连接日志',
 
   twoColumnProxyGroup: '双列显示代理组',
   type: '类型',
@@ -292,6 +293,7 @@ const zh: LANG_MESSAGE = {
   backgroundToneDarkThemeLabel: '深色主题',
   minProxyCardWidth: '节点卡片最小宽度',
   displayGlobalByMode: '根据模式显示 GLOBAL',
+  customGlobalNode: '自定义全局节点',
   displaySelectedNode: '显示选中节点',
   displayLatencyNumber: '显示延迟数字',
   disconnectOnRuleDisable: '禁用规则时打断连接',
@@ -317,7 +319,7 @@ const zh: LANG_MESSAGE = {
   pressAnyKey: '按下任意键',
   displayAllFeatures: '显示所有功能',
   displayAllFeaturesTip:
-    '显示所有功能，包括当前内核（honk）官方版本不支持的功能，如果您使用的 fork 版本支持其中的某些功能，可以尝试启用',
+    '显示所有功能，包括当前内核（honk / sing-box）官方版本不支持的功能，如果您使用的 fork 版本支持其中的某些功能，可以尝试启用',
   blurIntensity: '毛玻璃强度',
   scrollAnimationEffect: '滚动动画效果',
 
