@@ -2,6 +2,7 @@ import { displayAllFeatures } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import { computed, ref } from 'vue'
 import { daeCapabilities } from './capabilities'
+import { resetSingboxApi, singboxApi } from './singbox/api/state'
 import { singboxCaps } from './singbox/capabilities'
 import { singboxVariant } from './singbox/variant'
 
@@ -18,6 +19,7 @@ export const core = ref<Core>(Core.Unknown)
 export const resetCore = () => {
   core.value = Core.Unknown
   singboxVariant.value = undefined
+  resetSingboxApi()
 }
 
 const isNonMihomoCore = computed(
@@ -74,6 +76,12 @@ export type Cap =
   | 'logConnectionDetail'
   | 'disconnectOnModeChange'
   | 'modeSwitch'
+  | 'singboxApi'
+  | 'tools'
+  | 'tailscale'
+  | 'openvpn'
+  | 'openconnect'
+  | 'ebpfDiagnostics'
 
 type Caps = Partial<Record<Cap, boolean>>
 
@@ -149,7 +157,11 @@ const daeCaps = computed<Caps>(() => {
 const soft = computed<Caps>(() => {
   if (activeBackend.value?.type === 'dae') return daeCaps.value
   if (core.value === Core.Singbox) {
-    return singboxCaps(singboxVariant.value ?? 'official', isForkCoreOverride.value)
+    return singboxCaps(
+      singboxVariant.value ?? 'official',
+      isForkCoreOverride.value,
+      singboxApi.value,
+    )
   }
   return clashCaps.value
 })

@@ -49,7 +49,11 @@ import {
   toggleConnectionCardGroup,
 } from '@/helper/connection-card-groups'
 import type { ConnectionGroupableKey } from '@/constant'
-import { connectionCardGroupKey, connectionTabShow, renderConnections } from '@/store/connections'
+import {
+  connectionTabShow,
+  effectiveConnectionCardGroupKey,
+  renderConnections,
+} from '@/store/connections'
 import { connectionCardLines, proxyChainDirection, showFullProxyChain } from '@/store/settings'
 import { activeUuid } from '@/store/setup'
 import type { Connection } from '@/types'
@@ -89,7 +93,7 @@ const displayOptions = computed(() => ({
 }))
 
 const groups = computed<ConnectionGroup[]>(() => {
-  const groupKey = connectionCardGroupKey.value
+  const groupKey = effectiveConnectionCardGroupKey.value
 
   if (groupKey === null) return []
 
@@ -112,7 +116,7 @@ const groups = computed<ConnectionGroup[]>(() => {
 })
 
 const listItems = computed<ConnectionCardListItem[]>(() => {
-  if (connectionCardGroupKey.value === null) {
+  if (effectiveConnectionCardGroupKey.value === null) {
     return renderConnections.value.map((connection) => ({
       type: 'connection',
       id: `connection:${connection.id}`,
@@ -144,7 +148,7 @@ const listItems = computed<ConnectionCardListItem[]>(() => {
   })
 })
 
-watch([connectionCardGroupKey, connectionTabShow, activeUuid], resetConnectionCardGroups, {
+watch([effectiveConnectionCardGroupKey, connectionTabShow, activeUuid], resetConnectionCardGroups, {
   flush: 'sync',
 })
 watch(groups, (nextGroups) => syncConnectionCardGroupIds(nextGroups.map((group) => group.id)), {

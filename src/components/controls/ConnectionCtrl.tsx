@@ -1,5 +1,6 @@
 import { can } from '@/assembly/backend'
 import { disconnectAll, disconnectById, isPaused } from '@/assembly/connections'
+import { isConnectionKeyAvailable } from '@/assembly/singbox/connection-keys'
 import { useCtrlsBar } from '@/composables/use-ctrls-bar'
 import { useTooltip } from '@/composables/use-tooltip'
 import {
@@ -27,6 +28,7 @@ import {
   connectionSortDirection,
   connectionSortType,
   connectionTabShow,
+  effectiveConnectionCardGroupKey,
   quickFilterEnabled,
   quickFilterRegex,
   renderConnections,
@@ -150,13 +152,13 @@ export default defineComponent({
       const groupForCards = (
         <SelectInput
           class="select select-sm min-w-0 flex-1"
-          modelValue={connectionCardGroupKey.value}
+          modelValue={effectiveConnectionCardGroupKey.value}
           onUpdate:modelValue={(value) =>
             (connectionCardGroupKey.value = value as ConnectionGroupableKey | null)
           }
           options={[
             { value: null, label: t('noGrouping') },
-            ...CONNECTION_GROUPABLE_KEYS.map((value) => ({
+            ...CONNECTION_GROUPABLE_KEYS.filter(isConnectionKeyAvailable).map((value) => ({
               value,
               label: t(value),
             })),
@@ -167,7 +169,7 @@ export default defineComponent({
       const toggleGroupsLabel = () =>
         hasExpandedConnectionCardGroups.value ? t('collapseAllGroups') : t('expandAllGroups')
       const toggleGroupsButton =
-        isConnectionCard.value && connectionCardGroupKey.value !== null ? (
+        isConnectionCard.value && effectiveConnectionCardGroupKey.value !== null ? (
           <button
             class="btn btn-circle btn-sm"
             disabled={!hasConnectionCardGroups.value}

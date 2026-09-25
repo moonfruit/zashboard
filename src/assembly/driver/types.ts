@@ -40,6 +40,7 @@ export interface ConnectionsPayload {
   closed?: ConnectionRawMessage[]
   downloadTotal?: number
   uploadTotal?: number
+  reset?: boolean
 }
 
 export interface TrafficSample {
@@ -90,6 +91,10 @@ export interface ConnectionAccessor {
   remoteAddress(connection: Connection): string
   isDirect(connection: Connection): boolean
   smartBlock(connection: Connection): string | undefined
+  protocol?(connection: Connection): string
+  inbound?(connection: Connection): string
+  fromOutbound?(connection: Connection): string
+  outboundType?(connection: Connection): string
 }
 
 export interface SystemDriver {
@@ -145,7 +150,7 @@ export interface ConfigDriver {
 }
 
 export interface LogsDriver {
-  subscribe(level: string, onBatch: (logs: Log[]) => void): Subscription
+  subscribe(level: string, onBatch: (logs: Log[]) => void, onReset?: () => void): Subscription
 }
 
 export interface ConnectionsDriver {

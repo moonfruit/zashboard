@@ -216,6 +216,7 @@
 
 <script setup lang="ts">
 import { can } from '@/assembly/backend'
+import { isConnectionKeyAvailable } from '@/assembly/singbox/connection-keys'
 import {
   blockConnectionById,
   disconnectById,
@@ -289,6 +290,7 @@ import { computed, h, ref, type VNode } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HighlightText from '../common/HighlightText.vue'
 import ProxyName from '../proxies/ProxyName.vue'
+import { singboxColumns } from '../singbox/connection-fields'
 const { handlerInfo } = useConnections()
 const columnWidthMap = useStorage('config/table-column-width', {
   [CONNECTIONS_TABLE_ACCESSOR_KEY.Close]: 50,
@@ -561,6 +563,7 @@ const columnDefinitions: ColumnDef<Connection>[] = [
       getTableDisplayValue(original, CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser),
     cell: highlightedCell(CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser),
   },
+  ...singboxColumns(highlightedCell, getTableDisplayValue, t),
 ]
 
 const groupableKeySet = new Set<string>(CONNECTION_GROUPABLE_KEYS)
@@ -600,12 +603,15 @@ const tanstackTable = useVueTable({
                 key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close ||
                 connectionTabShow.value !== CONNECTION_TAB_TYPE.CLOSED,
             )
+            .filter(isConnectionKeyAvailable)
             .map((key) => [key, true]),
         ),
       }
     },
     get grouping() {
-      return grouping.value
+      return grouping.value.filter((key) =>
+        isConnectionKeyAvailable(key as CONNECTIONS_TABLE_ACCESSOR_KEY),
+      )
     },
     get expanded() {
       return expanded.value

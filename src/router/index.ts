@@ -1,3 +1,5 @@
+import { can } from '@/assembly/backend'
+import { coreReady } from '@/assembly/version'
 import { ROUTE_NAME } from '@/constant'
 import { resolvePageTransition } from '@/helper/page-transition'
 import { i18n } from '@/i18n'
@@ -40,6 +42,11 @@ const childrenRouter = [
     path: 'rules',
     name: ROUTE_NAME.rules,
     component: RulesPage,
+  },
+  {
+    path: 'tools',
+    name: ROUTE_NAME.tools,
+    component: () => import('@/views/ToolsPage.vue'),
   },
   {
     path: 'settings',
@@ -88,6 +95,12 @@ router.beforeEach((to, from) => {
   }
 })
 
+router.beforeEach(async (to) => {
+  if (to.name !== ROUTE_NAME.tools || !activeBackend.value) return
+  await coreReady()
+  if (!can('tools')) return { name: ROUTE_NAME.proxies }
+})
+
 router.afterEach((to) => {
   setTitleByName(to.name)
 })
@@ -97,5 +110,17 @@ watch([language, activeBackend], () => {
     setTitleByName(router.currentRoute.value.name)
   })
 })
+
+watch(
+  () => can('tools'),
+  async (available) => {
+    if (available || !activeBackend.value) return
+    await coreReady()
+    if (!activeBackend.value) return
+    if (!can('tools') && router.currentRoute.value.name === ROUTE_NAME.tools) {
+      router.push({ name: ROUTE_NAME.proxies })
+    }
+  },
+)
 
 export default router

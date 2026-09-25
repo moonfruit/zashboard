@@ -1,3 +1,4 @@
+import type { LogsDriver } from '@/assembly/driver/types'
 import { LOG_LEVEL } from '@/constant'
 import type { Log } from '@/types'
 
@@ -13,3 +14,7 @@ export const getLogConnectionID = (payload: string) =>
 
 export const normalizeSingboxLog = (log: Log): Log =>
   (log.type as string) === 'warn' ? { ...log, type: LOG_LEVEL.Warning } : log
+
+export const withReset = (logs: LogsDriver, onReset: () => void): LogsDriver => ({
+  subscribe: (level, onBatch) => logs.subscribe(level, onBatch, onReset),
+})

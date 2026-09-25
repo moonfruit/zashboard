@@ -29,7 +29,14 @@
       </span>
     </div>
     <div class="w-full leading-snug break-words">
+      <AnsiText
+        v-if="log.ansi"
+        :segments="log.ansi"
+        :text="log.payload"
+        :filter="logFilter"
+      />
       <HighlightText
+        v-else
         :text="log.payload"
         :filter="logFilter"
       />
@@ -41,6 +48,7 @@
 import { can } from '@/assembly/backend'
 import { getLogConnectionID } from '@/assembly/singbox/logs'
 import HighlightText from '@/components/common/HighlightText.vue'
+import AnsiText from '@/components/singbox/AnsiText.vue'
 import { useBounceOnVisible } from '@/composables/use-bounce-on-visible'
 import { LOG_LEVEL } from '@/constant'
 import { logFilter } from '@/store/logs'

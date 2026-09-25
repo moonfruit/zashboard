@@ -1,6 +1,8 @@
 import type { LANG_MESSAGE } from './en'
+import { singboxZhTW } from './singbox/zh-tw'
 
 const zhTW: LANG_MESSAGE = {
+  ...singboxZhTW,
   setup: '配置',
   overview: '概覽',
   proxies: '代理',

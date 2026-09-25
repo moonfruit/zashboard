@@ -4,6 +4,7 @@ import {
   disconnectById,
   getConnectionDisplayValue,
 } from '@/assembly/connections'
+import { isConnectionKeyAvailable } from '@/assembly/singbox/connection-keys'
 import { useBounceOnVisible } from '@/composables/use-bounce-on-visible'
 import { useConnections } from '@/composables/use-connections'
 import {
@@ -30,6 +31,7 @@ import { defineComponent } from 'vue'
 import type { JSX } from 'vue/jsx-runtime'
 import HighlightText from '../common/HighlightText.vue'
 import ProxyName from '../proxies/ProxyName.vue'
+import { singboxCardFields } from '../singbox/connection-fields'
 
 export default defineComponent<{
   conn: Connection
@@ -179,6 +181,7 @@ export default defineComponent<{
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser)}
           </div>
         ),
+        ...singboxCardFields(highlightedText),
         [CONNECTIONS_TABLE_ACCESSOR_KEY.Close]: () => {
           if (!can('connectionsClose')) return <div></div>
 
@@ -227,7 +230,11 @@ export default defineComponent<{
           {connectionCardLines.value.map((line) => (
             <div class={['flex h-5 items-center gap-1 text-sm', dimmed ? 'opacity-60' : '']}>
               {line
-                .filter((key) => key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close || !isClosed)
+                .filter(
+                  (key) =>
+                    (key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close || !isClosed) &&
+                    isConnectionKeyAvailable(key),
+                )
                 .map((key) => {
                   return componentMap[key]()
                 })}
