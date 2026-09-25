@@ -1,0 +1,14 @@
+{
+  "name": "zashboard-fork-proto",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "buf generate",
+    "sync": "cp \"${SINGBOX_SRC:-../../../go/mod/sing-box}/daemon/started_service.proto\" proto/daemon/ && git -C \"${SINGBOX_SRC:-../../../go/mod/sing-box}\" rev-parse HEAD > proto/SOURCE"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.72.0",
+    "@bufbuild/protoc-gen-es": "^2.13.0"
+  },
+  "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
+}

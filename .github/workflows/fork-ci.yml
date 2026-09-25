@@ -31,6 +31,22 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Check main chunk has no gRPC client
+        run: |
+          set +e
+          ls dist/assets/index-*.js > /dev/null || exit 1
+          grep -qE "grpc-websockets|application/grpc-web" dist/assets/index-*.js
+          test $? -eq 1
+
+      - name: Install fork proto
+        run: pnpm -C fork-proto i
+
+      - name: Check generated code
+        run: |
+          pnpm -C fork-proto generate
+          git diff --exit-code -- src/assembly/singbox/api/gen
+          test -z "$(git status --porcelain -- src/assembly/singbox/api/gen)"
+
       - name: Install fork tests
         run: pnpm -C fork-test i
 
