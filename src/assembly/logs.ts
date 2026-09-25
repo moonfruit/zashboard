@@ -8,6 +8,8 @@ import { throttle } from 'lodash'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { can, core, Core } from './backend'
 import { driver } from './driver'
+import { replaceAnsiText } from './singbox/ansi'
+import { withReset } from './singbox/logs'
 
 export const logs = shallowRef<LogWithSeq[]>([])
 export const isPaused = ref(false)
@@ -68,7 +70,8 @@ export const initLogs = () => {
     { deep: true },
   )
 
-  const subscription = driver().logs.subscribe(logLevel.value, (batch: Log[]) => {
+  const clear = () => ((pending = []), (logs.value = []))
+  const subscription = withReset(driver().logs, clear).subscribe(logLevel.value, (batch: Log[]) => {
     for (const data of batch) {
       if (isPaused.value) {
         seq++
@@ -83,7 +86,8 @@ export const initLogs = () => {
       pending.unshift({
         ...data,
         payload,
-        time: dayjs().format('HH:mm:ss'),
+        ansi: data.ansi && replaceAnsiText(data.ansi, matchers),
+        time: dayjs(data.timestamp).format('HH:mm:ss'),
         seq: seq++,
       })
     }

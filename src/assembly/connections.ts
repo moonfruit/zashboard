@@ -52,7 +52,7 @@ export const initConnections = () => {
     const currentMap = new Map<string, Connection>()
     const active = payload.connections.map((raw) => {
       const connection = raw as Connection
-      const previous = previousMap.get(connection.id)
+      const previous = payload.reset ? undefined : previousMap.get(connection.id)
 
       connection.downloadSpeed = previous
         ? accessor.download(connection) - accessor.download(previous)
@@ -189,6 +189,14 @@ export const getConnectionDisplayValue = (
       return accessor.remoteAddress(connection) || '-'
     case CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser:
       return accessor.inboundUser(connection)
+    case CONNECTIONS_TABLE_ACCESSOR_KEY.Protocol:
+      return accessor.protocol?.(connection) || '-'
+    case CONNECTIONS_TABLE_ACCESSOR_KEY.Inbound:
+      return accessor.inbound?.(connection) || '-'
+    case CONNECTIONS_TABLE_ACCESSOR_KEY.FromOutbound:
+      return accessor.fromOutbound?.(connection) || '-'
+    case CONNECTIONS_TABLE_ACCESSOR_KEY.OutboundType:
+      return accessor.outboundType?.(connection) || '-'
     case CONNECTIONS_TABLE_ACCESSOR_KEY.Close:
       return ''
   }

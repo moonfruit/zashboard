@@ -3,6 +3,7 @@ import {
   closedConnections,
   getConnectionVisibleSearchValues,
 } from '@/assembly/connections'
+import { isConnectionKeyAvailable } from '@/assembly/singbox/connection-keys'
 import { useStorage } from '@/composables/use-storage'
 import {
   CONNECTION_SEARCHABLE_KEYS,
@@ -54,6 +55,12 @@ if (
 ) {
   connectionCardGroupKey.value = null
 }
+
+export const effectiveConnectionCardGroupKey = computed<ConnectionGroupableKey | null>(() =>
+  connectionCardGroupKey.value !== null && isConnectionKeyAvailable(connectionCardGroupKey.value)
+    ? connectionCardGroupKey.value
+    : null,
+)
 
 export const quickFilterRegex = useStorage<string>('config/quick-filter-regex', 'direct|dns-out')
 export const quickFilterEnabled = useStorage<boolean>('config/quick-filter-enabled', false)

@@ -10,7 +10,7 @@ export default [
 
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', 'src/assembly/singbox/api/gen/**'],
   },
 
   // 视图层不得自行判断后端类型,也不得直接调 api 层。
@@ -39,6 +39,17 @@ export default [
               // 只挡后端方言模块;api/geoip、api/latency 是与后端无关的外部服务调用,不受限。
               group: ['@/api/clash'],
               message: '视图层不要直接调后端 api,请走 assembly 对应域的门面。',
+            },
+            {
+              group: [
+                '@/assembly/singbox/api/client',
+                '@/assembly/singbox/api/runtime',
+                '@/assembly/singbox/api/stream',
+                '@/assembly/singbox/api/streams',
+                '@/assembly/singbox/api/websocket',
+                '@/assembly/singbox/api/gen/*',
+              ],
+              message: '视图层不要直接调 sing-box API 客户端，请走 assembly 对应域的门面。',
             },
           ],
         },

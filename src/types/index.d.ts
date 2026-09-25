@@ -1,5 +1,7 @@
 export * from './dae'
+export * from './singbox'
 import type { DaeConnectionRawMessage } from './dae'
+import type { AnsiSegment, SingboxConnectionRawMessage } from './singbox'
 
 export type BackendType = 'clash' | 'dae'
 
@@ -146,7 +148,8 @@ export type ClashConnectionRawMessage = {
   }
 }
 
-export type ConnectionRawMessage = ClashConnectionRawMessage | DaeConnectionRawMessage
+export type ConnectionRawMessage =
+  ClashConnectionRawMessage | DaeConnectionRawMessage | SingboxConnectionRawMessage
 
 export type Connection = ConnectionRawMessage & {
   downloadSpeed: number
@@ -156,6 +159,8 @@ export type Connection = ConnectionRawMessage & {
 export type Log = {
   type: LOG_LEVEL
   payload: string
+  ansi?: AnsiSegment[]
+  timestamp?: number
 }
 
 export type LogWithSeq = Log & { seq: number; time: string }

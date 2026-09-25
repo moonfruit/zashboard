@@ -20,6 +20,7 @@
       type="button"
       class="nav-item"
       :aria-selected="modelValue === opt.value"
+      :aria-label="opt.ariaLabel"
       @click="select(opt.value)"
     >
       <component
@@ -53,6 +54,7 @@ export type SegmentOption = {
   label?: string
   count?: string | number
   icon?: Component
+  ariaLabel?: string
 }
 
 const props = withDefaults(

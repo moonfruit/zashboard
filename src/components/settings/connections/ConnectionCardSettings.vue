@@ -105,6 +105,10 @@
 </template>
 
 <script setup lang="ts">
+import {
+  isConnectionKeyAvailable,
+  onConnectionKeysChange,
+} from '@/assembly/singbox/connection-keys'
 import { CONNECTIONS_TABLE_ACCESSOR_KEY, DETAILED_CARD_STYLE, SIMPLE_CARD_STYLE } from '@/constant'
 import { connectionCardLines } from '@/store/settings'
 import { Bars2Icon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/outline'
@@ -115,11 +119,12 @@ const restOfColumns = ref<CONNECTIONS_TABLE_ACCESSOR_KEY[]>([])
 
 const setRestOfColumns = () => {
   restOfColumns.value = Object.values(CONNECTIONS_TABLE_ACCESSOR_KEY).filter(
-    (key) => !connectionCardLines.value.flat().includes(key),
+    (key) => !connectionCardLines.value.flat().includes(key) && isConnectionKeyAvailable(key),
   )
 }
 
 setRestOfColumns()
+onConnectionKeysChange(setRestOfColumns)
 
 const addLine = () => {
   connectionCardLines.value = [...connectionCardLines.value, []]

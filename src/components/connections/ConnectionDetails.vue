@@ -301,7 +301,15 @@ const tabOptions = computed<SegmentOption[]>(() =>
 const sectionDefs: { id: string; keys: CONNECTIONS_TABLE_ACCESSOR_KEY[] }[] = [
   {
     id: 'basic',
-    keys: [KEY.Type, KEY.ConnectTime, KEY.Rule, KEY.Process, KEY.InboundUser],
+    keys: [
+      KEY.Type,
+      KEY.ConnectTime,
+      KEY.Rule,
+      KEY.Process,
+      KEY.InboundUser,
+      KEY.Protocol,
+      KEY.Inbound,
+    ],
   },
   {
     id: 'sourceAndDestination',
@@ -316,7 +324,10 @@ const sectionDefs: { id: string; keys: CONNECTIONS_TABLE_ACCESSOR_KEY[] }[] = [
     ],
   },
   { id: 'traffic', keys: [KEY.Download, KEY.Upload, KEY.DlSpeed, KEY.UlSpeed] },
-  { id: 'outbound', keys: [KEY.Chains, KEY.Outbound] },
+  {
+    id: 'outbound',
+    keys: [KEY.Chains, KEY.Outbound, KEY.FromOutbound, KEY.OutboundType],
+  },
 ]
 
 const sections = computed(() => {

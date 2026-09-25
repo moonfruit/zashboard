@@ -9,12 +9,15 @@ import { initLogs, stopLogs } from './logs'
 import { initSatistic, stopSatistic } from './overview'
 import { fetchProxies } from './proxies'
 import { fetchRules } from './rules'
+import { onSingboxApiRestart } from './singbox/api/probe'
+import { cancelSingboxRefresh, handleSingboxEvent } from './singbox/refresh'
 import { probeActiveBackend } from './version'
 
 const EVENT_DEBOUNCE = 400
 
 let events: { close: () => void } | undefined
 let refreshTimer: ReturnType<typeof setTimeout> | undefined
+let sessionToken = 0
 
 const scheduleRefresh = () => {
   clearTimeout(refreshTimer)
@@ -27,6 +30,7 @@ const scheduleRefresh = () => {
 
 const stopEvents = () => {
   clearTimeout(refreshTimer)
+  cancelSingboxRefresh()
   refreshTimer = undefined
   events?.close()
   events = undefined
@@ -41,10 +45,13 @@ const initEvents = () => {
 
   events = subscribe((kind) => {
     if (kind === 'generation.changed') scheduleRefresh()
+    else handleSingboxEvent(kind)
   })
 }
 
 export const startBackendSession = async () => {
+  const token = ++sessionToken
+
   stopConnections()
   stopLogs()
   stopSatistic()
@@ -57,6 +64,8 @@ export const startBackendSession = async () => {
   }
 
   await probeActiveBackend().catch(() => {})
+
+  if (token !== sessionToken) return
 
   fetchConfigs()
   fetchProxies()
@@ -71,4 +80,5 @@ export const startBackendSession = async () => {
   }
 }
 
+onSingboxApiRestart(startBackendSession)
 watch(activeBackend, startBackendSession, { immediate: true })

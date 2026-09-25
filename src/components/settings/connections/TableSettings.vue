@@ -80,6 +80,11 @@
 </template>
 
 <script setup lang="ts">
+import {
+  isConnectionKeyAvailable,
+  onConnectionKeysChange,
+  restConnectionKeys,
+} from '@/assembly/singbox/connection-keys'
 import { CONNECTIONS_TABLE_ACCESSOR_KEY } from '@/constant'
 import { connectionTableColumns, showFullProxyChain } from '@/store/settings'
 import { Bars2Icon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/outline'
@@ -88,8 +93,11 @@ import Draggable from 'vuedraggable'
 
 const restOfColumns = ref(
   Object.values(CONNECTIONS_TABLE_ACCESSOR_KEY).filter(
-    (key) => !connectionTableColumns.value.includes(key),
+    (key) => !connectionTableColumns.value.includes(key) && isConnectionKeyAvailable(key),
   ),
+)
+onConnectionKeysChange(
+  () => (restOfColumns.value = restConnectionKeys(connectionTableColumns.value)),
 )
 
 const addColumn = (key: CONNECTIONS_TABLE_ACCESSOR_KEY) => {

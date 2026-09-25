@@ -6,6 +6,10 @@ import { checkUpgradeCore } from '@/store/settings'
 import { backendList, setActiveBackend } from '@/store/setup'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+vi.mock('@/assembly/singbox/api/runtime', () => ({
+  probe: vi.fn().mockResolvedValue({ ok: false, error: 'network' }),
+}))
+
 const clashBackend = {
   type: 'clash' as const,
   protocol: 'http',

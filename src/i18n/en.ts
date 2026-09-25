@@ -1,4 +1,7 @@
+import { singboxEn } from './singbox/en'
+
 const en = {
+  ...singboxEn,
   setup: 'Setup',
   overview: 'Overview',
   proxies: 'Proxies',

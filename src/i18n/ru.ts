@@ -1,6 +1,8 @@
 import type { LANG_MESSAGE } from './en'
+import { singboxRu } from './singbox/ru'
 
 const ru: LANG_MESSAGE = {
+  ...singboxRu,
   setup: 'Настройка',
   overview: 'Обзор',
   proxies: 'Прокси',

@@ -15,6 +15,7 @@ import { can } from '@/assembly/backend'
 import { getLogConnectionID } from '@/assembly/singbox/logs'
 import HighlightText from '@/components/common/HighlightText.vue'
 import VirtualTable from '@/components/common/VirtualTable.vue'
+import AnsiText from '@/components/singbox/AnsiText.vue'
 import { LOG_LEVEL } from '@/constant'
 import { logFilter } from '@/store/logs'
 import type { LogWithSeq } from '@/types'
@@ -97,7 +98,14 @@ const columns: ColumnDef<LogWithSeq>[] = [
     id: 'payload',
     enableSorting: false,
     accessorFn: (log) => log.payload,
-    cell: ({ row }) => h(HighlightText, { text: row.original.payload, filter: logFilter.value }),
+    cell: ({ row }) =>
+      row.original.ansi
+        ? h(AnsiText, {
+            segments: row.original.ansi,
+            text: row.original.payload,
+            filter: logFilter.value,
+          })
+        : h(HighlightText, { text: row.original.payload, filter: logFilter.value }),
     meta: { cellClass: 'max-w-none!' },
   },
 ]

@@ -23,6 +23,7 @@ import NetworkCard from '@/components/overview/NetworkCard.vue'
 import ProviderTrafficOverview from '@/components/overview/ProviderTrafficOverview.vue'
 import RuleHitCountCard from '@/components/overview/RuleHitCountCard.vue'
 import TopologyCharts from '@/components/overview/TopologyCharts.vue'
+import SingboxStatsCard from '@/components/singbox/SingboxStatsCard.vue'
 import { usePaddingForViews } from '@/composables/use-padding-for-views'
 import { overviewCardOrder } from '@/store/settings'
 import type { Component } from 'vue'
@@ -45,5 +46,6 @@ const cardComponents: Record<string, Component> = {
   ConnectionHistory,
   RuleHitCountCard,
   HonkStatsCard,
+  SingboxStatsCard,
 }
 </script>

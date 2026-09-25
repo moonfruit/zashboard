@@ -12,6 +12,7 @@ import { computed, nextTick, ref } from 'vue'
 import { can, core, Core, resetCore } from './backend'
 import { fetchCapabilities, resetCapabilities } from './capabilities'
 import { driver } from './driver'
+import { probeSingboxApi } from './singbox/api/probe'
 import { detectSingboxVariant, singboxVariant } from './singbox/variant'
 
 export const version = ref()
@@ -100,6 +101,10 @@ const probeBackendVersion = async (backend: Backend) => {
   core.value = detectCore(version.value)
   singboxVariant.value =
     core.value === Core.Singbox ? detectSingboxVariant(version.value) : undefined
+
+  if (singboxVariant.value === 'moonfruit') {
+    await probeSingboxApi(backend)
+  }
 
   if (backend.type === 'dae') {
     await fetchCapabilities()

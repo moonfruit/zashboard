@@ -6,6 +6,7 @@ import {
   DocumentTextIcon,
   GlobeAltIcon,
   SwatchIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/vue/24/outline'
 
 export const IS_APPLE_DEVICE = /Mac|iPod|iPhone|iPad/.test(navigator.platform)
@@ -55,6 +56,10 @@ export enum CONNECTIONS_TABLE_ACCESSOR_KEY {
   GeoIP = 'geoip',
   RemoteAddress = 'remoteAddress',
   InboundUser = 'inboundUser',
+  Protocol = 'protocol',
+  Inbound = 'inbound',
+  FromOutbound = 'fromOutbound',
+  OutboundType = 'outboundType',
 }
 
 export const CONNECTION_SEARCHABLE_KEYS = Object.values(CONNECTIONS_TABLE_ACCESSOR_KEY).filter(
@@ -76,6 +81,9 @@ export const CONNECTION_GROUPABLE_KEYS = [
   CONNECTIONS_TABLE_ACCESSOR_KEY.GeoIP,
   CONNECTIONS_TABLE_ACCESSOR_KEY.RemoteAddress,
   CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Protocol,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Inbound,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.OutboundType,
 ] as const
 
 export type ConnectionGroupableKey = (typeof CONNECTION_GROUPABLE_KEYS)[number]
@@ -250,6 +258,7 @@ export enum ROUTE_NAME {
   connections = 'connections',
   logs = 'logs',
   rules = 'rules',
+  tools = 'tools',
   settings = 'settings',
   setup = 'setup',
 }
@@ -260,6 +269,7 @@ export const ROUTE_ICON_MAP = {
   [ROUTE_NAME.connections]: ArrowsRightLeftIcon,
   [ROUTE_NAME.rules]: SwatchIcon,
   [ROUTE_NAME.logs]: DocumentTextIcon,
+  [ROUTE_NAME.tools]: WrenchScrewdriverIcon,
   [ROUTE_NAME.settings]: Cog6ToothIcon,
   [ROUTE_NAME.setup]: CubeTransparentIcon,
 }
@@ -410,6 +420,7 @@ export enum OVERVIEW_CARD {
   ConnectionHistory = 'ConnectionHistory',
   RuleHitCountCard = 'RuleHitCountCard',
   HonkStatsCard = 'HonkStatsCard',
+  SingboxStatsCard = 'SingboxStatsCard',
 }
 
 export enum MIHOMO {

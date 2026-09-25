@@ -50,6 +50,18 @@ external-ui-url: https://github.com/moonfruit/zashboard/releases/latest/download
 
 `sync-upstream.yml` 需要 `SYNC_TOKEN` secret：仅授权本仓库的 fine-grained PAT，权限为 Contents、Pull requests、Workflows 读写。
 
+## sing-box API 代码生成
+
+`fork-proto/` 是独立的 pnpm 项目，vendor 了 sing-box moonfruit 分支的 `daemon/started_service.proto`，用 buf + protoc-gen-es 生成 `src/assembly/singbox/api/gen/`。生成产物提交进仓库，构建不依赖 buf。
+
+```bash
+pnpm -C fork-proto i
+pnpm -C fork-proto sync       # 从 SINGBOX_SRC（默认 ../../../go/mod/sing-box）拷贝 proto，并记录 commit 到 proto/SOURCE
+pnpm -C fork-proto generate
+```
+
+`fork-ci.yml` 会重新生成并检查没有差异。
+
 ## 测试
 
 fork 自有的测试放在 `fork-test/`，它是一个独立的 pnpm 项目（有自己的 `package.json`、`pnpm-workspace.yaml`、`pnpm-lock.yaml`），不改动上游的依赖和 lockfile：
@@ -66,6 +78,8 @@ pnpm -C fork-test test
 - 包管理器与根项目一致：`packageManager` 相同，`minimumReleaseAge` 同样是 `10080`。
 - `type-check` 使用根目录的 `vue-tsc`，`tsconfig.app.json` 继承根项目配置，一并检查 `src` 与测试文件；`tsconfig.node.json` 只检查 `vitest.config.ts`。vitest 本身不做类型检查。
 - 按特性分子目录，例如 `fork-test/singbox/`。
+
+sing-box API 冒烟：`node test/mock-server.mjs --port 19998 --version 'sing-box 1.15.0-alpha.6-reF1nd-moonfruit.2'` 与 `node fork-test/mock-singbox-api.mjs --port 19999 --upstream 19998`，面板连 `127.0.0.1:19999`。mock 的控制端点：`GET /__mock/stall` 让当前的 Status 流停止推送但不断开，`GET /__mock/unauthenticated` 切换流和一元调用返回 Unauthenticated；`ClearLogs` 会向订阅者推送带新行的 reset。
 
 ## 手动同步
 

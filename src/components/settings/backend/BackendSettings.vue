@@ -31,6 +31,7 @@
               </div>
             </div>
             <BackendSwitch :show-actions="false" />
+            <SingboxApiStatus />
           </div>
         </SettingItem>
       </div>
@@ -179,6 +180,7 @@ import BackendPortsGrid from '@/components/settings/backend/BackendPortsGrid.vue
 import BackendSwitch from '@/components/settings/backend/BackendSwitch.vue'
 import DaeRuntimePanel from '@/components/dae/DaeRuntimePanel.vue'
 import DnsDiagnostics from '@/components/settings/backend/DnsDiagnostics.vue'
+import SingboxApiStatus from '@/components/singbox/SingboxApiStatus.vue'
 import SettingItem from '@/components/settings/SettingItem.vue'
 import { backendActions } from '@/helper/backend-actions'
 import { useIsSettingVisible } from '@/composables/use-setting-visibility'
