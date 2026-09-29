@@ -52,13 +52,19 @@
         </div>
         <div class="text-3xl font-extralight tabular-nums">
           {{ connectionCount }}
+          <template v-if="outboundConnectionsAvailable">
+            <span class="text-base-content/40 text-xl">/</span>
+            {{ outboundConnectionCount }}
+          </template>
         </div>
         <div class="mt-1 h-14">
           <SparklineChart
             :data="connectionsHistory"
+            :secondary-data="outboundConnectionsAvailable ? outboundConnectionsHistory : undefined"
+            :secondary-name="t('singboxConnectionsOut')"
             :y-axis-floor="10"
             :window-seconds="timeSaved"
-            :name="t('connections')"
+            :name="outboundConnectionsAvailable ? t('singboxConnectionsIn') : t('connections')"
             :label-formatter="connLabelFormatter"
             :tooltip-formatter="connTooltipFormatter"
           />
@@ -82,6 +88,11 @@ import {
   uploadSpeed,
   uploadSpeedHistory,
 } from '@/assembly/overview'
+import {
+  outboundConnectionCount,
+  outboundConnectionsAvailable,
+  outboundConnectionsHistory,
+} from '@/assembly/overview-fork/connections-out'
 import SparklineChart from '@/components/charts/SparklineChart.vue'
 import {
   formatHistoryTooltipParam,

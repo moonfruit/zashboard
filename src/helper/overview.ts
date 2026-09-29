@@ -1,9 +1,10 @@
 import type { IPInfo } from '@/api/geoip'
+import type { IPCheckAPI } from '@/assembly/overview-fork/ip-check'
 import type { IP_INFO_API } from '@/constant'
 import { ref } from 'vue'
 
 export type IPCheckResult = {
-  api: IP_INFO_API | null
+  api: IPCheckAPI | null
   ip: string[]
   ipWithPrivacy: string[]
   info: IPInfo | null

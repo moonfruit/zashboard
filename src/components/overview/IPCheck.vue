@@ -28,53 +28,46 @@
       </div>
     </div>
 
-    <div class="mt-3 flex flex-col gap-3">
-      <div>
-        <SelectInput
-          v-model="ipCheckPrimaryAPI"
-          class="select-ghost select-xs h-6 min-h-6 w-auto border-0"
-          :aria-label="`${t('IPInfoAPI')} 1`"
-          :options="apiOptions"
+    <div class="mt-2 flex flex-col gap-2">
+      <template
+        v-for="(slot, index) in slots"
+        :key="slot.key"
+      >
+        <div
+          v-if="index > 0"
+          class="border-base-content/5 border-t"
         />
-        <div class="mt-1 text-sm">
-          {{ showPrivacy ? ipCheckPrimaryResult.ipWithPrivacy[0] : ipCheckPrimaryResult.ip[0] }}
-          <span
-            v-if="ipCheckPrimaryResult.ip[1]"
-            class="text-base-content/60 text-xs"
-          >
-            ({{ showPrivacy ? ipCheckPrimaryResult.ipWithPrivacy[1] : ipCheckPrimaryResult.ip[1] }})
-          </span>
+        <div>
+          <SelectInput
+            v-model="slot.api.value"
+            class="select-ghost select-xs h-6 min-h-6 w-auto border-0"
+            :aria-label="`${t('IPInfoAPI')} ${index + 1}`"
+            :options="apiOptions"
+          />
+          <div class="mt-1 text-sm">
+            {{ showPrivacy ? slot.result.value.ipWithPrivacy[0] : slot.result.value.ip[0] }}
+            <span
+              v-if="slot.result.value.ip[1]"
+              class="text-base-content/60 text-xs"
+            >
+              ({{ showPrivacy ? slot.result.value.ipWithPrivacy[1] : slot.result.value.ip[1] }})
+            </span>
+          </div>
         </div>
-      </div>
-
-      <div class="border-base-content/5 border-t" />
-
-      <div>
-        <SelectInput
-          v-model="ipCheckSecondaryAPI"
-          class="select-ghost select-xs h-6 min-h-6 w-auto border-0"
-          :aria-label="`${t('IPInfoAPI')} 2`"
-          :options="apiOptions"
-        />
-        <div class="mt-1 text-sm">
-          {{ showPrivacy ? ipCheckSecondaryResult.ipWithPrivacy[0] : ipCheckSecondaryResult.ip[0] }}
-          <span
-            v-if="ipCheckSecondaryResult.ip[1]"
-            class="text-base-content/60 text-xs"
-          >
-            ({{
-              showPrivacy ? ipCheckSecondaryResult.ipWithPrivacy[1] : ipCheckSecondaryResult.ip[1]
-            }})
-          </span>
-        </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import SelectInput from '@/components/common/SelectInput.vue'
-import { getPublicIPInfo, type IPInfo } from '@/api/geoip'
+import type { IPInfo } from '@/api/geoip'
+import {
+  forkIPCheckSlots,
+  getIPCheckInfo,
+  ipCheckAPIOptions,
+  type IPCheckAPI,
+} from '@/assembly/overview-fork/ip-check'
 import { ipCheckPrimaryResult, ipCheckSecondaryResult, type IPCheckResult } from '@/helper/overview'
 import { IP_INFO_API } from '@/constant'
 import { useTooltip } from '@/composables/use-tooltip'
@@ -91,19 +84,24 @@ const { showTip } = useTooltip()
 const handlerShowPrivacyTip = (e: Event) => {
   showTip(e, t('ipScreenshotTip'))
 }
-const apiOptions = Object.values(IP_INFO_API).map((value) => ({ value, label: value }))
+const apiOptions = ipCheckAPIOptions
 
-type Slot = 'primary' | 'secondary'
-const requestIDs: Record<Slot, number> = { primary: 0, secondary: 0 }
+type Slot = { key: string; api: Ref<IPCheckAPI>; result: Ref<IPCheckResult> }
+const slots: Slot[] = [
+  { key: 'primary', api: ipCheckPrimaryAPI, result: ipCheckPrimaryResult },
+  { key: 'secondary', api: ipCheckSecondaryAPI, result: ipCheckSecondaryResult },
+  ...forkIPCheckSlots,
+]
+const requestIDs: Record<string, number> = {}
 
-const queryingResult = (api: IP_INFO_API): IPCheckResult => ({
+const queryingResult = (api: IPCheckAPI): IPCheckResult => ({
   api,
   ip: [t('getting'), ''],
   ipWithPrivacy: [t('getting'), ''],
   info: null,
 })
 
-const failedResult = (api: IP_INFO_API): IPCheckResult => ({
+const failedResult = (api: IPCheckAPI): IPCheckResult => ({
   api,
   ip: [t('testFailed'), ''],
   ipWithPrivacy: [t('testFailed'), ''],
@@ -125,7 +123,7 @@ const distinct = (values: string[]) => [
   ...new Set(values.map((value) => value.trim()).filter(Boolean)),
 ]
 
-const displayLabel = (info: IPInfo, api: IP_INFO_API) => {
+const displayLabel = (info: IPInfo, api: IPCheckAPI) => {
   if (api === IP_INFO_API.IPIP) {
     return distinct([info.country, info.region, info.city, info.organization]).join(' ')
   }
@@ -133,7 +131,7 @@ const displayLabel = (info: IPInfo, api: IP_INFO_API) => {
   return distinct([info.country, info.organization]).join(' ') || info.ip
 }
 
-const successResult = (info: IPInfo, api: IP_INFO_API): IPCheckResult => {
+const successResult = (info: IPInfo, api: IPCheckAPI): IPCheckResult => {
   const label = displayLabel(info, api)
   const privateLabel = api === IP_INFO_API.IPIP ? `${info.country || '**'} ** ** **` : label
 
@@ -145,47 +143,35 @@ const successResult = (info: IPInfo, api: IP_INFO_API): IPCheckResult => {
   }
 }
 
-const querySlot = async (slot: Slot, apiRef: Ref<IP_INFO_API>, resultRef: Ref<IPCheckResult>) => {
+const querySlot = async ({ key, api: apiRef, result: resultRef }: Slot) => {
   const api = apiRef.value
-  const requestID = ++requestIDs[slot]
+  const requestID = (requestIDs[key] = (requestIDs[key] ?? 0) + 1)
   resultRef.value = queryingResult(api)
 
   try {
-    const info = await getPublicIPInfo(api)
+    const info = await getIPCheckInfo(api)
 
-    if (requestID !== requestIDs[slot] || api !== apiRef.value) return
+    if (requestID !== requestIDs[key] || api !== apiRef.value) return
     resultRef.value = successResult(info, api)
   } catch {
-    if (requestID !== requestIDs[slot] || api !== apiRef.value) return
+    if (requestID !== requestIDs[key] || api !== apiRef.value) return
     resultRef.value = failedResult(api)
   }
 }
 
 const getIPs = () => {
-  void querySlot('primary', ipCheckPrimaryAPI, ipCheckPrimaryResult)
-  void querySlot('secondary', ipCheckSecondaryAPI, ipCheckSecondaryResult)
+  slots.forEach((slot) => void querySlot(slot))
 }
 
-watch(ipCheckPrimaryAPI, () => void querySlot('primary', ipCheckPrimaryAPI, ipCheckPrimaryResult))
-watch(
-  ipCheckSecondaryAPI,
-  () => void querySlot('secondary', ipCheckSecondaryAPI, ipCheckSecondaryResult),
-)
+slots.forEach((slot) => watch(slot.api, () => void querySlot(slot)))
 
 onMounted(() => {
   if (!autoIPCheck.value) return
 
-  if (
-    ipCheckPrimaryResult.value.ip.length === 0 ||
-    ipCheckPrimaryResult.value.api !== ipCheckPrimaryAPI.value
-  ) {
-    void querySlot('primary', ipCheckPrimaryAPI, ipCheckPrimaryResult)
-  }
-  if (
-    ipCheckSecondaryResult.value.ip.length === 0 ||
-    ipCheckSecondaryResult.value.api !== ipCheckSecondaryAPI.value
-  ) {
-    void querySlot('secondary', ipCheckSecondaryAPI, ipCheckSecondaryResult)
-  }
+  slots.forEach((slot) => {
+    if (slot.result.value.ip.length === 0 || slot.result.value.api !== slot.api.value) {
+      void querySlot(slot)
+    }
+  })
 })
 </script>

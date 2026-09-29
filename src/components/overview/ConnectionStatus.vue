@@ -60,6 +60,7 @@ import {
   getGithubLatencyAPI,
   getYouTubeLatencyAPI,
 } from '@/api/latency'
+import { forkLatencyTargets } from '@/assembly/overview-fork/latency'
 import { baiduLatency, cloudflareLatency, githubLatency, youtubeLatency } from '@/helper/overview'
 import { getColorForLatency } from '@/helper'
 import { autoConnectionCheck } from '@/store/settings'
@@ -74,6 +75,7 @@ const targets = [
   { name: 'Cloudflare', ref: cloudflareLatency, api: getCloudflareLatencyAPI },
   { name: 'GitHub', ref: githubLatency, api: getGithubLatencyAPI },
   { name: 'YouTube', ref: youtubeLatency, api: getYouTubeLatencyAPI },
+  ...forkLatencyTargets,
 ]
 
 const isTesting = ref(false)

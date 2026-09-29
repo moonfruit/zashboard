@@ -1,3 +1,4 @@
+import type { IPCheckAPI } from '@/assembly/overview-fork/ip-check'
 import { useStorage } from '@/composables/use-storage'
 import { DEFAULT_SETTINGS_MENU_ORDER } from '@/config/settings-items'
 import {
@@ -216,11 +217,11 @@ export const keyboardShortcuts = useStorage<Record<string, string>>('config/keyb
 
 export const splitOverviewPage = useStorage('config/split-overview-page', false)
 export const autoIPCheck = useStorage('config/auto-ip-check', true)
-export const ipCheckPrimaryAPI = useStorage<IP_INFO_API>(
+export const ipCheckPrimaryAPI = useStorage<IPCheckAPI>(
   'config/ip-check-primary-api',
   IP_INFO_API.IPIP,
 )
-export const ipCheckSecondaryAPI = useStorage<IP_INFO_API>(
+export const ipCheckSecondaryAPI = useStorage<IPCheckAPI>(
   'config/ip-check-secondary-api',
   IP_INFO_API.IPSB,
 )
