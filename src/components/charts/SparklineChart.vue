@@ -19,6 +19,8 @@ import { getChartPointValue } from './chart-types'
 const props = withDefaults(
   defineProps<{
     data: ChartPoint[]
+    secondaryData?: ChartPoint[]
+    secondaryName?: string
     yAxisFloor?: number
     color?: 'primary' | 'secondary'
     name?: string
@@ -108,6 +110,26 @@ const options = computed<EChartOption>(() => {
           ]),
         },
       },
+      ...(props.secondaryData
+        ? [
+            {
+              type: 'line' as const,
+              name: props.secondaryName,
+              symbol: 'none',
+              smooth: true,
+              lineStyle: { width: 1.5 },
+              data: props.secondaryData,
+              color: colors.seriesSecondary,
+              emphasis: { disabled: true },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: colors.seriesSecondary },
+                  { offset: 1, color: colors.seriesSecondaryMuted },
+                ]),
+              },
+            },
+          ]
+        : []),
     ],
   }
 })

@@ -3,6 +3,7 @@ import { ref, shallowRef, watch } from 'vue'
 import { can } from './backend'
 import { activeConnections, downloadTotal, uploadTotal } from './connections'
 import { driver } from './driver'
+import { pushOutboundConnections, resetOutboundConnections } from './overview-fork/connections-out'
 
 const trafficStream = () => driver().metrics.traffic()
 
@@ -91,6 +92,7 @@ export const initSatistic = () => {
 
       memoryHistory.value = memoryHistory.value.slice(-1 * savedPoints)
       connectionsHistory.value = connectionsHistory.value.slice(-1 * savedPoints)
+      pushOutboundConnections(timestamp, savedPoints)
     },
   )
 
@@ -141,6 +143,7 @@ export const stopSatistic = () => {
   uploadSpeedHistory.value = makeInitValue()
   memoryHistory.value = makeInitValue()
   connectionsHistory.value = makeInitValue()
+  resetOutboundConnections()
 }
 
 export const honkStats = shallowRef<HonkStats>()
