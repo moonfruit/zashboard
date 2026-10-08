@@ -1,5 +1,6 @@
 import { activeConnections, downloadTotal, uploadTotal } from '@/assembly/connections'
 import { downloadSpeed, memory, uploadSpeed } from '@/assembly/overview'
+import { singboxRuntimeStatGrid } from '@/assembly/overview-fork/runtime'
 import { prettyBytesHelper, prettySpeedHelper } from '@/helper/utils'
 import {
   ArrowDownIcon,
@@ -121,6 +122,7 @@ export const sidebarStatGrid = computed<SidebarStatGridItem[]>(() => {
       value: upload.value,
       unit: `${upload.unit}/s`,
     },
+    ...singboxRuntimeStatGrid.value,
   ]
 })
 

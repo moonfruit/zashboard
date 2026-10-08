@@ -11,7 +11,6 @@ export const singboxRu: typeof singboxEn = {
     'Нет соединения: API service должен слушать тот же адрес и порт, что и external_controller',
   singboxApiSubpath: 'Проверка API пропущена: бэкенд использует подпуть',
   singboxApiReconnecting: 'Переподключение…',
-  singboxStatsCard: 'Состояние sing-box',
   singboxUptime: 'Время работы',
   singboxGoroutines: 'Горутины',
   singboxConnectionsIn: 'Входящие подключения',

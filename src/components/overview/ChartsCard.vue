@@ -71,6 +71,15 @@
         </div>
         <div class="text-base-content/50 flex items-center justify-between gap-2 text-xs">
           <span>{{ $t('memoryUsage') }} {{ memoryStr }}</span>
+          <span
+            v-if="singboxRuntimeStats"
+            class="truncate"
+          >
+            {{ $t('singboxUptime') }}
+            <span class="font-mono">{{ singboxRuntimeStats.uptime }}</span> ·
+            {{ $t('singboxGoroutines') }}
+            <span class="font-mono">{{ singboxRuntimeStats.goroutines }}</span>
+          </span>
         </div>
       </div>
     </div>
@@ -93,6 +102,7 @@ import {
   outboundConnectionsAvailable,
   outboundConnectionsHistory,
 } from '@/assembly/overview-fork/connections-out'
+import { singboxRuntimeStats } from '@/assembly/overview-fork/runtime'
 import SparklineChart from '@/components/charts/SparklineChart.vue'
 import {
   formatHistoryTooltipParam,

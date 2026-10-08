@@ -9,7 +9,6 @@ export const singboxEn = {
     'Not reachable: serve the API service on the same address and port as external_controller',
   singboxApiSubpath: 'API probing skipped: backend uses a sub-path',
   singboxApiReconnecting: 'Reconnecting…',
-  singboxStatsCard: 'sing-box runtime',
   singboxUptime: 'Uptime',
   singboxGoroutines: 'Goroutines',
   singboxConnectionsIn: 'Inbound connections',

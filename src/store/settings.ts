@@ -275,6 +275,11 @@ export const overviewCardOrder = useStorage<{ card: OVERVIEW_CARD; visible: bool
 )
 
 const allCardTypes = Object.values(OVERVIEW_CARD)
+if (overviewCardOrder.value.some(({ card }) => !allCardTypes.includes(card))) {
+  overviewCardOrder.value = overviewCardOrder.value.filter(({ card }) =>
+    allCardTypes.includes(card),
+  )
+}
 const existingCardTypes = new Set(overviewCardOrder.value.map((item) => item.card))
 const missingCards = allCardTypes.filter((card) => !existingCardTypes.has(card))
 

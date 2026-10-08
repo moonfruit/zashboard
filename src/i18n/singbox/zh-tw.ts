@@ -10,7 +10,6 @@ export const singboxZhTW: typeof singboxEn = {
   singboxApiNetwork: '無法連接：需要把 API service 配置在與 external_controller 相同的位址連接埠上',
   singboxApiSubpath: '已略過 API 探測：後端使用了子路徑',
   singboxApiReconnecting: '正在重新連接…',
-  singboxStatsCard: 'sing-box 執行狀態',
   singboxUptime: '執行時長',
   singboxGoroutines: 'Goroutines',
   singboxConnectionsIn: '入站連接',
