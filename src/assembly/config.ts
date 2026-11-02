@@ -1,4 +1,4 @@
-import type { Config, DNSQuery } from '@/types'
+import type { Config, DNSQuery, DNSQueryParams } from '@/types'
 import { ref } from 'vue'
 import { driver } from './driver'
 
@@ -43,5 +43,5 @@ export const flushFakeIP = () => driver().config.flushFakeIP()
 
 export const flushDNSCache = () => driver().config.flushDNSCache()
 
-export const queryDNS = (params: { name: string; type: string }): Promise<DNSQuery> =>
-  driver().config.queryDNS(params)
+export const queryDNS = (params: DNSQueryParams, signal?: AbortSignal): Promise<DNSQuery> =>
+  driver().config.queryDNS(params, signal)

@@ -165,7 +165,10 @@ export type Log = {
 
 export type LogWithSeq = Log & { seq: number; time: string }
 
+export type DNSQueryParams = { name: string; type: string; skipFakeIP?: boolean }
+
 export type DNSQuery = {
+  SkipFakeIP?: boolean
   AD: boolean
   CD: boolean
   RA: boolean

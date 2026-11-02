@@ -235,7 +235,7 @@ export const clashDriver: Driver = {
     updateGeoData: () => done(updateGeoDataAPI()),
     flushFakeIP: () => done(flushFakeIPAPI()),
     flushDNSCache: () => done(flushDNSCacheAPI()),
-    queryDNS: async (params) => (await queryDNSAPI(params)).data,
+    queryDNS: async (params, signal) => (await queryDNSAPI(params, signal)).data,
   },
 
   logs: {

@@ -6,6 +6,7 @@ import type {
   Connection,
   ConnectionRawMessage,
   DNSQuery,
+  DNSQueryParams,
   HonkStats,
   Log,
   NodeRank,
@@ -146,7 +147,7 @@ export interface ConfigDriver {
   updateGeoData(): Promise<void>
   flushFakeIP(): Promise<void>
   flushDNSCache(): Promise<void>
-  queryDNS(params: { name: string; type: string }): Promise<DNSQuery>
+  queryDNS(params: DNSQueryParams, signal?: AbortSignal): Promise<DNSQuery>
 }
 
 export interface LogsDriver {
