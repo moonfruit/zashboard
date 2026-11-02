@@ -5,6 +5,7 @@ import type {
   Backend,
   Config,
   DNSQuery,
+  DNSQueryParams,
   HonkStats,
   NodeRank,
   Proxy,
@@ -120,9 +121,10 @@ export const flushDNSCacheAPI = () => {
   return axios.post('/cache/dns/flush')
 }
 
-export const queryDNSAPI = (params: { name: string; type: string }) => {
+export const queryDNSAPI = ({ skipFakeIP, ...params }: DNSQueryParams, signal?: AbortSignal) => {
   return axios.get<DNSQuery>('/dns/query', {
-    params,
+    params: { ...params, ...(skipFakeIP === undefined ? {} : { 'skip-fake-ip': skipFakeIP }) },
+    ...(signal ? { signal } : {}),
   })
 }
 

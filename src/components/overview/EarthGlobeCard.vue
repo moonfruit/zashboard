@@ -336,7 +336,7 @@
 import { activeConnections } from '@/assembly/connections'
 import SegmentedControl from '@/components/common/SegmentedControl.vue'
 import SelectInput from '@/components/common/SelectInput.vue'
-import { queryDNS } from '@/assembly/config'
+import { createEarthDNSResolver } from '@/assembly/overview-fork/earth-dns'
 import { getPublicIPInfo, type IPInfo } from '@/api/geoip'
 import { getCachedPublicIPInfo } from '@/helper/overview'
 import { IP_INFO_API } from '@/constant'
@@ -355,7 +355,6 @@ import {
 } from '@heroicons/vue/24/outline'
 import { useMediaQuery } from '@vueuse/core'
 import * as ipaddr from 'ipaddr.js'
-import pLimit from 'p-limit'
 import type { CSSProperties } from 'vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -396,9 +395,7 @@ const hoveredEndpoint = ref<EarthEndpointInfo | null>(null)
 const tooltipPosition = ref({ x: 0, y: 0 })
 const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
 const locationCache = new Map<string, EarthLocation | null>()
-const dnsCache = new Map<string, { ip: string | null; expiresAt: number }>()
-const dnsRequests = new Map<string, Promise<string | null>>()
-const dnsLookupLimit = pLimit(6)
+const dnsResolver = createEarthDNSResolver()
 const lookupRequests = new Map<number, (locations: Record<string, EarthLocation | null>) => void>()
 let lookupID = 0
 let worker: Worker | null = null
@@ -415,14 +412,6 @@ let initIdleTimer: ReturnType<typeof setTimeout> | null = null
 let initIdleHandle: number | null = null
 
 const isValidIP = (value: string) => Boolean(value && ipaddr.isValid(value))
-
-const normalizeIP = (value: string) => {
-  try {
-    return ipaddr.parse(value).toNormalizedString()
-  } catch {
-    return null
-  }
-}
 
 const maskIP = (value: string) => {
   if (!isValidIP(value)) return '—'
@@ -486,59 +475,6 @@ const tooltipStyle = computed<CSSProperties>(() => ({
 }))
 
 const postWorker = (message: GeoWorkerRequest) => worker?.postMessage(message)
-
-const resolveHostname = (hostname: string) => {
-  const cached = dnsCache.get(hostname)
-
-  if (cached && cached.expiresAt > Date.now()) return Promise.resolve(cached.ip)
-
-  const pending = dnsRequests.get(hostname)
-
-  if (pending) return pending
-
-  const request = dnsLookupLimit(async () => {
-    for (const { type, answerType } of [
-      { type: 'A', answerType: 1 },
-      { type: 'AAAA', answerType: 28 },
-    ]) {
-      try {
-        const data = await queryDNS({ name: hostname, type })
-
-        for (const answer of data.Answer ?? []) {
-          const ip = answer.type === answerType ? normalizeIP(answer.data) : null
-
-          if (!ip) continue
-
-          dnsCache.set(hostname, {
-            ip,
-            expiresAt: Date.now() + Math.max(1, answer.TTL) * 1000,
-          })
-          return ip
-        }
-      } catch {}
-    }
-
-    dnsCache.set(hostname, { ip: null, expiresAt: Date.now() + 30_000 })
-    return null
-  }).finally(() => dnsRequests.delete(hostname))
-
-  dnsRequests.set(hostname, request)
-  return request
-}
-
-const resolveDestinationIPs = async (hostnames: string[]) => {
-  const entries = await Promise.all(
-    hostnames.map(async (hostname) => [hostname, await resolveHostname(hostname)] as const),
-  )
-
-  while (dnsCache.size > 4096) {
-    const oldest = dnsCache.keys().next().value
-    if (oldest === undefined) break
-    dnsCache.delete(oldest)
-  }
-
-  return Object.fromEntries(entries)
-}
 
 const lookupLocations = async (ips: string[], locale: string) => {
   const result: Record<string, EarthLocation | null> = {}
@@ -609,7 +545,7 @@ const refreshRoutes = async () => {
         language.value,
         lookupLocations,
         preferredOrigin,
-        resolveDestinationIPs,
+        dnsResolver.resolve,
       )
 
       if (
@@ -829,8 +765,7 @@ onBeforeUnmount(() => {
   worker?.removeEventListener('message', handleWorkerMessage)
   worker?.terminate()
   worker = null
-  dnsCache.clear()
-  dnsRequests.clear()
+  dnsResolver.dispose()
   lookupRequests.clear()
 })
 </script>
