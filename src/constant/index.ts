@@ -140,6 +140,7 @@ export enum LIST_DISPLAY_STYLE {
 }
 
 export enum RULE_TAB_TYPE {
+  DNS = 'dnsRules',
   RULES = 'rules',
   PROVIDER = 'ruleProvider',
   TRACE = 'daeRoutingTrace',

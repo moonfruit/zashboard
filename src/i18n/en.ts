@@ -2,6 +2,8 @@ import { singboxEn } from './singbox/en'
 
 const en = {
   ...singboxEn,
+  dnsRules: 'DNS Rules',
+  routeRules: 'Routing Rules',
   setup: 'Setup',
   overview: 'Overview',
   proxies: 'Proxies',

@@ -48,7 +48,13 @@
 </template>
 
 <script setup lang="ts">
-import { renderRules, renderRulesProvider, rulesFilter, rulesTabShow } from '@/store/rules'
+import {
+  renderRules,
+  renderRulesProvider,
+  ruleDisplayIndex,
+  rulesFilter,
+  rulesTabShow,
+} from '@/store/rules'
 import DialogWrapper from '@/components/common/DialogWrapper.vue'
 import HighlightText from '@/components/common/HighlightText.vue'
 import ProxyChainPath from '@/components/common/ProxyChainPath.vue'
@@ -78,14 +84,6 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const { showRuleHitTip } = useRuleHitTooltip()
-
-const ruleIndexMap = computed(() => {
-  const map = new Map<Rule, number>()
-
-  rules.value.forEach((rule, index) => map.set(rule, index + 1))
-
-  return map
-})
 
 const hasRuleExtra = computed(() => rules.value.some((rule) => rule.extra))
 const ruleColumnVisibility = computed(() => ({
@@ -167,12 +165,12 @@ const ruleColumns: ColumnDef<Rule>[] = [
   {
     header: '#',
     id: 'index',
-    accessorFn: (rule) => ruleIndexMap.value.get(rule) ?? 0,
+    accessorFn: (rule) => ruleDisplayIndex.value.get(rule) ?? 0,
     cell: ({ row }) =>
       h(
         'span',
         { class: 'tabular-nums opacity-50' },
-        String(ruleIndexMap.value.get(row.original) ?? ''),
+        String(ruleDisplayIndex.value.get(row.original) ?? ''),
       ),
     meta: { cellClass: 'w-12 text-right', headerClass: 'text-right' },
   },

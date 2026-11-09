@@ -3,6 +3,8 @@ import { singboxZhTW } from './singbox/zh-tw'
 
 const zhTW: LANG_MESSAGE = {
   ...singboxZhTW,
+  dnsRules: 'DNS規則',
+  routeRules: '路由規則',
   setup: '配置',
   overview: '概覽',
   proxies: '代理',

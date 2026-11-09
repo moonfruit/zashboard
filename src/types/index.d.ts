@@ -86,6 +86,7 @@ export type ProxyProvider = {
 }
 
 export type Rule = {
+  category?: string
   type: string
   payload: string
   proxy: string
