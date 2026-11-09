@@ -137,6 +137,7 @@
               virtualRow.index % 2 === 0 && 'table-row-stripe',
               !isDragging ? 'cursor-pointer' : 'cursor-grabbing',
               connectionTabShow === CONNECTION_TAB_TYPE.ALL &&
+              !showClosedOnly &&
               isClosedConnection(rows[virtualRow.index].original)
                 ? 'opacity-60'
                 : '',
@@ -246,7 +247,9 @@ import {
   connectionFilter,
   connectionTabShow,
   isClosedConnection,
+  isClosedOnlyView,
   renderConnections,
+  showClosedOnly,
 } from '@/store/connections'
 import {
   connectionTableColumns,
@@ -599,9 +602,7 @@ const tanstackTable = useVueTable({
         ...Object.fromEntries(
           connectionTableColumns.value
             .filter(
-              (key) =>
-                key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close ||
-                connectionTabShow.value !== CONNECTION_TAB_TYPE.CLOSED,
+              (key) => key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close || !isClosedOnlyView.value,
             )
             .filter(isConnectionKeyAvailable)
             .map((key) => [key, true]),
@@ -677,7 +678,7 @@ const rowVirtualizerOptions = computed(() => {
   return {
     count: rows.value.length,
     getScrollElement: () => parentRef.value,
-    estimateSize: () => 36,
+    estimateSize: () => (tableSize.value === TABLE_SIZE.LARGE ? 40 : 36),
     overscan: 24,
   }
 })
