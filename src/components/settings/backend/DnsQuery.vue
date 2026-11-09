@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import { queryDNS } from '@/assembly/config'
+import { queryDiagnosticDNS as queryDNS } from '@/assembly/singbox/diagnostic-dns'
 import { getIPInfo, type IPInfo } from '@/api/geoip'
 import { notifyRequestError } from '@/helper/request-error'
 import { useStorage } from '@/composables/use-storage'
