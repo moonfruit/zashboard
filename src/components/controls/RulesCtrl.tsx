@@ -1,9 +1,9 @@
 import { can } from '@/assembly/backend'
-import { fetchRules, ruleProviderList, rules, updateRuleProvider } from '@/assembly/rules'
+import { fetchRules, ruleProviderList, updateRuleProvider } from '@/assembly/rules'
 import { useCtrlsBar } from '@/composables/use-ctrls-bar'
 import { LIST_DISPLAY_STYLE, RULE_TAB_TYPE } from '@/constant'
 import { showNotification } from '@/helper/notification'
-import { rulesFilter, rulesTabShow } from '@/store/rules'
+import { categorizedRules, hasDnsRules, rulesFilter, rulesTabShow } from '@/store/rules'
 import {
   disconnectOnRuleDisable,
   displayLatencyInRule,
@@ -29,7 +29,7 @@ export default defineComponent({
     const hasProviders = computed(() => {
       return can('ruleProviders') && ruleProviderList.value.length > 0
     })
-    const showTabs = computed(() => hasProviders.value || can('routingTrace'))
+    const showTabs = computed(() => hasProviders.value || hasDnsRules.value || can('routingTrace'))
 
     const handlerClickUpgradeAllProviders = async () => {
       if (isUpgrading.value) return
@@ -65,12 +65,14 @@ export default defineComponent({
     }
 
     const counts: Partial<Record<RULE_TAB_TYPE, () => number>> = {
-      [RULE_TAB_TYPE.RULES]: () => rules.value.length,
+      [RULE_TAB_TYPE.RULES]: () => categorizedRules.value.route.length,
+      [RULE_TAB_TYPE.DNS]: () => categorizedRules.value.dns.length,
       [RULE_TAB_TYPE.PROVIDER]: () => ruleProviderList.value.length,
     }
 
     const tabsWithNumbers = computed(() =>
       Object.values(RULE_TAB_TYPE)
+        .filter((type) => type !== RULE_TAB_TYPE.DNS || hasDnsRules.value)
         .filter((type) => type !== RULE_TAB_TYPE.TRACE || can('routingTrace'))
         .map((type) => ({ type, count: counts[type]?.() })),
     )
@@ -82,7 +84,7 @@ export default defineComponent({
           onUpdate:modelValue={(value) => (rulesTabShow.value = value as RULE_TAB_TYPE)}
           options={tabsWithNumbers.value.map(({ type, count }) => ({
             value: type,
-            label: t(type),
+            label: t(type === RULE_TAB_TYPE.RULES && hasDnsRules.value ? 'routeRules' : type),
             count,
           }))}
         />

@@ -3,6 +3,8 @@ import { singboxRu } from './singbox/ru'
 
 const ru: LANG_MESSAGE = {
   ...singboxRu,
+  dnsRules: 'Правила DNS',
+  routeRules: 'Правила маршрутизации',
   setup: 'Настройка',
   overview: 'Обзор',
   proxies: 'Прокси',

@@ -3,6 +3,8 @@ import { singboxZh } from './singbox/zh'
 
 const zh: LANG_MESSAGE = {
   ...singboxZh,
+  dnsRules: 'DNS规则',
+  routeRules: '路由规则',
   setup: '配置',
   overview: '概览',
   proxies: '代理',
