@@ -14,7 +14,12 @@ import {
 } from '@/constant'
 import { getConnectionChains, getConnectionSmartBlock } from '@/helper'
 import { notifyRequestError } from '@/helper/request-error'
-import { connectionFilter, connectionTabShow, isClosedConnection } from '@/store/connections'
+import {
+  connectionFilter,
+  connectionTabShow,
+  isClosedConnection,
+  showClosedOnly,
+} from '@/store/connections'
 import { connectionCardLines, proxyChainDirection, showFullProxyChain } from '@/store/settings'
 import type { Connection } from '@/types'
 import {
@@ -220,7 +225,8 @@ export default defineComponent<{
         },
       }
       const isClosed = isClosedConnection(conn)
-      const dimmed = isClosed && connectionTabShow.value === CONNECTION_TAB_TYPE.ALL
+      const dimmed =
+        isClosed && connectionTabShow.value === CONNECTION_TAB_TYPE.ALL && !showClosedOnly.value
 
       return (
         <div
