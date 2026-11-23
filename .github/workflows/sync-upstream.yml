@@ -1,8 +1,3 @@
-# Keeps the fork's tracking branches in step with Zephyruso/zashboard:
-#   main      -> upstream main, fast-forward only
-#   upstream  -> latest upstream release tag, fast-forward only
-# and opens a PR merging a new upstream release into moonfruit.
-#
 # Requires the SYNC_TOKEN secret: a fine-grained PAT for this repository with
 # Contents, Pull requests and Workflows read/write. GITHUB_TOKEN cannot push
 # commits that touch .github/workflows, and PRs it opens do not trigger CI.
@@ -45,9 +40,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git remote add zephyruso https://github.com/Zephyruso/zashboard.git
           git fetch --tags zephyruso main
-
-      - name: Fast-forward main
-        run: git push origin refs/remotes/zephyruso/main:refs/heads/main
 
       - name: Fast-forward upstream to latest release
         id: release
