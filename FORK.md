@@ -6,14 +6,14 @@
 
 | 分支        | 内容                          | 更新方式                        |
 | ----------- | ----------------------------- | ------------------------------- |
-| `main`      | 上游 `main` 的镜像            | 只快进，不提交                  |
+| `main`      | 上游 `main` 的镜像            | 按需手动快进，不提交            |
 | `upstream`  | 上游最新 release tag          | 只快进，不提交                  |
 | `moonfruit` | 发行分支：上游版本 + 自有补丁 | 合并 `upstream`、`feat/*` 的 PR |
 | `feat/*`    | 新特性                        | 从 `moonfruit` 拉出             |
 
 - 上游只在发版后合入 `moonfruit`。上游未发版的紧急修复用 `git cherry-pick -x` 先挑进来。
 - 同步 PR 必须用 **Create a merge commit** 合并；squash / rebase 会丢掉上游祖先，下次同步会冲突。
-- 想回馈上游的改动从 `main` 拉分支。
+- 想回馈上游的改动，先手动同步 `main` 到最新的 `zephyruso/main`，再从 `main` 拉分支。
 
 ## 减少冲突的约定
 
@@ -44,7 +44,7 @@ external-ui-url: https://github.com/moonfruit/zashboard/releases/latest/download
 | 工作流              | 触发                      | 作用                                                                    |
 | ------------------- | ------------------------- | ----------------------------------------------------------------------- |
 | `fork-ci.yml`       | 推送 / PR 到 `moonfruit`  | type-check、lint、build、fork 测试                                      |
-| `sync-upstream.yml` | 每 6 小时、手动           | 快进 `main` 和 `upstream`，上游发版后开 PR 合入 `moonfruit`，冲突则失败 |
+| `sync-upstream.yml` | 每 6 小时、手动           | 快进 `upstream` 到上游最新正式 tag，开 PR 合入 `moonfruit`，冲突则失败  |
 | `fork-release.yml`  | 在 `moonfruit` 上手动运行 | 自动编号，发布 Release（`dist.zip`、`dist-no-fonts.zip`）并部署 Pages   |
 | `deploy.yml`        | 上游的发布流程            | 在 fork 中已禁用                                                        |
 
@@ -81,7 +81,7 @@ pnpm -C fork-test test
 
 sing-box API 冒烟：`node test/mock-server.mjs --port 19998 --version 'sing-box 1.15.0-alpha.6-reF1nd-moonfruit.2'` 与 `node fork-test/mock-singbox-api.mjs --port 19999 --upstream 19998`，面板连 `127.0.0.1:19999`。mock 的控制端点：`GET /__mock/stall` 让当前的 Status 流停止推送但不断开，`GET /__mock/unauthenticated` 切换流和一元调用返回 Unauthenticated；`ClearLogs` 会向订阅者推送带新行的 reset。
 
-## 手动同步
+## 手动同步正式版
 
 ```bash
 git remote add zephyruso https://github.com/Zephyruso/zashboard.git
@@ -89,7 +89,6 @@ git remote set-url --push zephyruso DISABLED
 
 git fetch zephyruso --tags
 TAG=$(git tag -l 'v*' --sort=-v:refname | rg '^v\d+\.\d+\.\d+$' | head -1)
-git switch main && git merge --ff-only zephyruso/main && git push
 git switch upstream && git merge --ff-only "${TAG}" && git push
 git switch moonfruit && git merge upstream
 pnpm i && pnpm type-check && pnpm build
